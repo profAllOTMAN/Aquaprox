@@ -1,0 +1,36 @@
+{
+  "name": "aquaprox-experience",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/prepare-standalone.mjs",
+    "start": "next start",
+    "check": "tsc --noEmit",
+    "validate": "npm run check && npm run build",
+    "start:standalone": "node .next/standalone/server.js",
+    "audit:production": "npm audit --omit=dev"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "npm@10.8.2",
+  "dependencies": {
+    "@types/qrcode": "^1.5.5",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.468.0",
+    "next": "^16.3.1",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
+  }
+}

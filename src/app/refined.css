@@ -1,0 +1,667 @@
+/* AQUAPROX display system — shared visual language for tablet, stand TV and LED wall */
+
+html[data-kiosk="true"],
+html[data-kiosk="true"] body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html[data-kiosk="true"] .experience-shell {
+  height: 100vh;
+  min-height: 0;
+}
+
+[data-interaction="passive"] .attract-screen,
+[data-interaction="passive"] button {
+  cursor: default;
+}
+
+[data-interaction="passive"] {
+  pointer-events: none;
+}
+
+.passive-indicator {
+  pointer-events: none;
+}
+
+.conversion-card {
+  color: inherit;
+  text-align: left;
+}
+
+.contact-honeypot {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.form-error {
+  color: #ffc287;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.building-cutaway svg {
+  isolation: isolate;
+}
+
+.building-cutaway .ground-line {
+  fill: none;
+  stroke: #5ed7e8;
+  stroke-width: 1.5;
+  stroke-opacity: .26;
+}
+
+.building-cutaway .ground-line.secondary {
+  stroke-opacity: .1;
+}
+
+.building-cutaway .roof {
+  fill: #1a485c;
+  stroke: #60c9db;
+  stroke-width: 2;
+}
+
+.building-cutaway .roof-side {
+  fill: #0d2d40;
+  stroke: #3e8298;
+  stroke-width: 1.5;
+}
+
+.building-cutaway .left-wall,
+.building-cutaway .right-wall {
+  fill: #0a2739;
+  stroke: #39758a;
+  stroke-width: 1.5;
+}
+
+.building-cutaway .floor-shell {
+  fill: url(#roomLight);
+  stroke: #367389;
+  stroke-width: 1.2;
+}
+
+.building-cutaway .floor-slab {
+  fill: #2a5e70;
+  stroke: #5db4c5;
+  stroke-width: .8;
+}
+
+.building-cutaway .floor-slab.basement {
+  fill: #347086;
+}
+
+.building-cutaway .partition {
+  fill: none;
+  stroke: #326276;
+  stroke-width: 1.2;
+}
+
+.building-cutaway .sofa,
+.building-cutaway .cabinet,
+.building-cutaway .wet-zone,
+.building-cutaway .service-box {
+  fill: #214b5d;
+  stroke: #498196;
+}
+
+.building-cutaway .sofa-line,
+.building-cutaway .detail-line,
+.building-cutaway .tap,
+.building-cutaway .plant-screen,
+.building-cutaway .tank-level {
+  fill: none;
+  stroke: #8cc7d2;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.building-cutaway .table,
+.building-cutaway .bath,
+.building-cutaway .basin,
+.building-cutaway .sink,
+.building-cutaway .service-dial {
+  fill: #15384a;
+  stroke: #64adbd;
+}
+
+.building-cutaway .table-core {
+  fill: #63cedf;
+}
+
+.building-cutaway .cooktop {
+  fill: #0c2636;
+  stroke: #507c8d;
+}
+
+.building-cutaway .floor-index {
+  fill: #537e8e;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+.building-cutaway .plant-unit,
+.building-cutaway .tank {
+  fill: #183e50;
+  stroke: #65b8c9;
+  stroke-width: 1.2;
+}
+
+.building-cutaway .plant-gauge {
+  fill: #0c2636;
+  stroke: #65d2e5;
+}
+
+.building-cutaway .technical-label {
+  fill: #6f9cab;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: .16em;
+}
+
+.building-cutaway .network-pipe {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.building-cutaway .network-pipe.cold {
+  stroke: #56d9ee;
+  filter: drop-shadow(0 0 5px rgba(76, 214, 236, .55));
+}
+
+.building-cutaway .network-pipe.hot {
+  stroke: #f59a56;
+  filter: drop-shadow(0 0 5px rgba(245, 154, 86, .4));
+}
+
+.building-cutaway .main-riser {
+  stroke-width: 8;
+}
+
+.building-cutaway .branches {
+  stroke-width: 5;
+}
+
+.building-cutaway .micro {
+  stroke-width: 3;
+  stroke-dasharray: 8 7;
+  animation: refined-flow 1.7s linear infinite;
+}
+
+.building-cutaway .inlet-node {
+  fill: #96eff8;
+  stroke: #37bdd5;
+  stroke-width: 6;
+  filter: url(#cutawayGlow);
+}
+
+.building-cutaway .flow-particles.cold-flow circle {
+  fill: #d1fbff;
+  filter: url(#cutawayGlow);
+}
+
+.building-cutaway .flow-particles.hot-flow circle {
+  fill: #ffd09d;
+  filter: url(#cutawayGlow);
+}
+
+.building-cutaway .sensor-cluster > path {
+  stroke: #55ccdf;
+  stroke-width: 1.5;
+}
+
+.building-cutaway .sensor-ring {
+  fill: rgba(63, 192, 216, .08);
+  stroke: #4dcce1;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  animation: sensor-spin 8s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.building-cutaway .sensor-core {
+  fill: #66d9e9;
+  filter: url(#cutawayGlow);
+}
+
+.building-cutaway .building-legend text {
+  fill: #668d9c;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: .12em;
+}
+
+.building-cutaway .legend-cold { fill: #56d9ee; }
+.building-cutaway .legend-hot { fill: #f59a56; }
+.building-cutaway .legend-sensor { fill: #9db4bd; }
+
+.building-cutaway .hotspot-label rect {
+  fill: rgba(5, 29, 44, .96);
+  stroke: #4e8ba0;
+  stroke-width: 1.2;
+}
+
+.building-cutaway .hotspot-label text {
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.building-cutaway .hotspot-hit {
+  fill: rgba(0, 0, 0, .001);
+}
+
+.building-cutaway .hotspot-core {
+  stroke-width: 2;
+}
+
+.attract-building .building-cutaway {
+  transform: perspective(1200px) rotateX(1deg);
+}
+
+.building-stage {
+  background:
+    radial-gradient(circle at 51% 42%, rgba(33, 122, 145, .22), transparent 44%),
+    linear-gradient(180deg, rgba(7, 32, 47, .18), rgba(3, 19, 30, .38));
+}
+
+.experience-promise {
+  color: #bcecf2;
+  border-left: 1px solid rgba(83, 211, 234, .45);
+  display: grid;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: clamp(18px, 2.2vw, 42px);
+  padding-left: 16px;
+}
+
+.experience-promise strong {
+  color: var(--aqua);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.experience-promise span {
+  color: #708f9c;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.stage-camera {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  will-change: transform;
+}
+
+.building-stage.is-focused .stage-camera::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 25%, rgba(1, 13, 22, .2) 92%);
+}
+
+.zoom-controls {
+  position: absolute;
+  z-index: 7;
+  top: 17px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 5px;
+  border: 1px solid rgba(80, 142, 162, .65);
+  background: rgba(5, 28, 43, .92);
+  box-shadow: 0 14px 35px rgba(0, 8, 15, .25);
+  backdrop-filter: blur(10px);
+}
+
+.zoom-controls button {
+  width: 42px;
+  height: 42px;
+  color: #c9edf1;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  transition: color .2s, background .2s, opacity .2s;
+}
+
+.zoom-controls button:active { background: rgba(84, 211, 233, .14); }
+.zoom-controls button:disabled { opacity: .25; cursor: default; }
+.zoom-controls button svg { width: 18px; }
+
+.zoom-controls output {
+  min-width: 58px;
+  color: var(--aqua);
+  text-align: center;
+  font: 9px/1 var(--font-mono);
+  letter-spacing: .07em;
+}
+
+.zoom-controls .reset-zoom {
+  border-left-color: rgba(73, 126, 145, .48);
+}
+
+.clue-card {
+  position: absolute;
+  z-index: 8;
+  bottom: 48px;
+  width: min(390px, 36%);
+  padding: 20px 22px 18px;
+  border: 1px solid rgba(83, 184, 205, .72);
+  background: linear-gradient(145deg, rgba(8, 41, 59, .97), rgba(4, 25, 39, .98));
+  box-shadow: 0 24px 70px rgba(0, 8, 15, .58), inset 3px 0 0 rgba(84, 211, 233, .7);
+  backdrop-filter: blur(14px);
+}
+
+.clue-card.clue-left { left: 24px; }
+.clue-card.clue-right { right: 24px; }
+
+.clue-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 11px;
+}
+
+.clue-meta span {
+  color: var(--aqua);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 9px/1 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.clue-meta span svg { width: 15px; }
+
+.clue-meta > small {
+  color: #6f97a6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.clue-card h2 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 1.55vw, 30px);
+  font-weight: 440;
+  letter-spacing: -.035em;
+}
+
+.clue-card > p {
+  color: #b8cdd4;
+  margin: 0 0 13px;
+  font-size: clamp(11px, .78vw, 14px);
+  line-height: 1.48;
+}
+
+.clue-detail {
+  color: #7fa2af;
+  display: flex;
+  gap: 9px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(63, 111, 130, .45);
+  font-size: 10px;
+  line-height: 1.42;
+}
+
+.clue-detail svg {
+  flex: 0 0 auto;
+  width: 16px;
+  color: var(--aqua);
+}
+
+.reveal-risk {
+  width: 100%;
+  min-height: 52px;
+  color: #062335;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 16px;
+  background: var(--aqua);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.reveal-risk svg { width: 17px; }
+
+.clue-disclaimer {
+  color: #537a89;
+  display: block;
+  margin-top: 9px;
+  font-size: 7px;
+  letter-spacing: .04em;
+}
+
+.value-impact {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin: -4px 0 14px;
+  padding: 12px;
+  border: 1px solid rgba(75, 142, 161, .48);
+  background: rgba(36, 119, 139, .09);
+}
+
+.value-impact > svg {
+  flex: 0 0 auto;
+  width: 18px;
+  color: var(--aqua);
+}
+
+.value-impact div { display: grid; gap: 4px; }
+.value-impact small, .process-label { color: #66909f; font-size: 7px; letter-spacing: .12em; text-transform: uppercase; }
+.value-impact strong { color: #c8e1e5; font-size: 10px; font-weight: 520; line-height: 1.4; }
+.process-label { margin-bottom: 7px; }
+
+.building-stage::before {
+  content: "JUMEAU HYDRAULIQUE · VUE EN COUPE";
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  left: 22px;
+  color: #598494;
+  font: 8px/1 var(--font-mono);
+  letter-spacing: .16em;
+}
+
+.building-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(92, 198, 218, .07);
+  background: linear-gradient(90deg, transparent 49.9%, rgba(88, 194, 216, .035) 50%, transparent 50.1%);
+}
+
+/* Tablet: the building remains central and the explanation becomes a bottom sheet. */
+[data-display="tablet"] .screen {
+  padding: 24px 28px;
+}
+
+[data-display="tablet"] .brand-tagline,
+[data-display="tablet"] .live-signal,
+[data-display="tablet"] .attract-footer,
+[data-display="tablet"] .stage-floor {
+  display: none;
+}
+
+[data-display="tablet"] .attract-copy {
+  left: 46px;
+  top: 43%;
+  width: 76%;
+}
+
+[data-display="tablet"] .attract-copy h1 {
+  font-size: clamp(42px, 6.3vw, 68px);
+}
+
+[data-display="tablet"] .attract-building {
+  right: -18%;
+  bottom: -2%;
+  width: 86vw;
+  opacity: .5;
+}
+
+[data-display="tablet"] .explore-heading {
+  margin-top: 18px;
+}
+
+[data-display="tablet"] .explore-heading h1 {
+  font-size: 36px;
+}
+
+[data-display="tablet"] .instruction {
+  max-width: 270px;
+}
+
+[data-display="tablet"] .experience-promise { display: none; }
+
+[data-display="tablet"] .explore-layout {
+  height: calc(100% - 190px);
+}
+
+[data-display="tablet"] .building-stage .building-visual {
+  width: 96%;
+}
+
+[data-display="tablet"] .clue-card {
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  width: auto;
+  max-width: 520px;
+}
+
+[data-display="tablet"] .panel-open .building-stage {
+  width: 100%;
+  opacity: .32;
+}
+
+[data-display="tablet"] .risk-panel {
+  top: auto;
+  left: 4%;
+  right: 4%;
+  bottom: 0;
+  width: 92%;
+  min-width: 0;
+  max-height: 78%;
+  border-radius: 10px 10px 0 0;
+}
+
+[data-display="tablet"] .risk-panel .panel-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  margin-top: -2px;
+}
+
+[data-display="tablet"] .risk-animation {
+  height: 105px;
+}
+
+[data-display="tablet"] .explore-footer {
+  height: 64px;
+}
+
+/* LED wall: increased information scale, air and touch targets for distant viewing. */
+[data-display="wall"] .screen {
+  padding: clamp(60px, 3vw, 90px) clamp(90px, 5vw, 150px);
+}
+
+[data-display="wall"] .brand {
+  transform: scale(1.18);
+  transform-origin: left center;
+}
+
+[data-display="wall"] .attract-copy h1 {
+  font-size: clamp(88px, 4.2vw, 112px);
+}
+
+[data-display="wall"] .attract-copy .lead {
+  font-size: 30px;
+}
+
+[data-display="wall"] .touch-cta {
+  font-size: 17px;
+}
+
+[data-display="wall"] .touch-cta .touch-icon {
+  width: 90px;
+  height: 90px;
+}
+
+[data-display="wall"] .attract-building {
+  width: 58vw;
+}
+
+[data-display="wall"] .building-stage .building-visual {
+  width: min(76%, 1480px);
+}
+
+[data-display="wall"] .hotspot-label text {
+  font-size: 15px;
+}
+
+[data-display="wall"] .clue-card {
+  width: min(500px, 34%);
+  padding: 28px 30px 24px;
+}
+
+[data-display="wall"] .zoom-controls {
+  min-height: 66px;
+}
+
+[data-display="wall"] .zoom-controls button {
+  width: 54px;
+  height: 54px;
+}
+
+[data-display="wall"] .risk-panel {
+  min-width: 600px;
+}
+
+[data-display="wall"] .primary-button {
+  min-height: 82px;
+  font-size: 15px;
+}
+
+@keyframes refined-flow {
+  to { stroke-dashoffset: -30; }
+}
+
+@keyframes sensor-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 760px) {
+  [data-display="tablet"] .instruction { display: none; }
+  [data-display="tablet"] .score-shortcut { min-width: 240px; }
+  [data-display="tablet"] .progress-block { width: 32%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .building-cutaway .micro,
+  .building-cutaway .sensor-ring { animation: none; }
+}

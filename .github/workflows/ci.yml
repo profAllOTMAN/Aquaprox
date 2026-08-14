@@ -1,0 +1,34 @@
+name: Qualité et build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Installer les dépendances verrouillées
+        run: npm ci
+      - name: Vérifier TypeScript
+        run: npm run check
+      - name: Construire la version production
+        run: npm run build
+      - name: Auditer les dépendances de production
+        run: npm audit --omit=dev --audit-level=high
