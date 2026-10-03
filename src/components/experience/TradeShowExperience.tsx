@@ -42,7 +42,7 @@ function BuildingScene({ scene, completed, onEnter }: { scene: Scene; completed:
 
   return (
     <motion.section className={`trade-scene trade-building ${hovered ? "is-basement-hovered" : ""}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .42 }}>
-      <motion.div className="trade-media-wrap" animate={scene === "buildingZoom" ? { scale: 1.18, x: "-2%", y: "-10%" } : { scale: 1, x: 0, y: 0 }} transition={{ duration: .74, ease }}>
+      <motion.div className="trade-media-wrap" animate={scene === "buildingZoom" ? { scale: 1.16, x: "-2%", y: "-9%" } : { scale: 1, x: 0, y: 0 }} transition={{ duration: .82, ease }}>
         <video ref={videoRef} className="trade-media" autoPlay muted loop playsInline preload="auto"><source src="/assets/tradeshow/building-loop.mp4" type="video/mp4" /></video>
       </motion.div>
       <div className="trade-vignette" /><motion.div className="trade-basement-focus" animate={{ opacity: hovered ? 1 : 0 }} />
@@ -50,22 +50,22 @@ function BuildingScene({ scene, completed, onEnter }: { scene: Scene; completed:
       <div className="trade-scene-title"><span>{completed ? "Parcours complété" : "Vue d’ensemble"}</span><h1>{completed ? "Continuez à explorer le bâtiment" : "Explorez les zones techniques du bâtiment"}</h1></div>
       <AnimatePresence>{scene === "building" && <motion.div className="trade-zone-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{BUILDING_ZONES.map((zone) => <ZoneMarker key={zone.id} zone={zone} complete={completed} onHover={setHovered} onSelect={() => zone.id === "chaufferie" && onEnter()} />)}</motion.div>}</AnimatePresence>
       {completed && <div className="trade-building-score"><CheckCircle2 size={18} /> 1 risque identifié</div>}
-      <div className="trade-hint"><span /> Touchez une zone pour l’explorer</div><motion.div className="trade-zoom-shade" animate={{ opacity: scene === "buildingZoom" ? .42 : 0 }} />
+      <div className="trade-hint"><span /> Touchez une zone pour l’explorer</div><motion.div className="trade-zoom-shade" animate={{ opacity: scene === "buildingZoom" ? .26 : 0 }} transition={{ duration: .6, ease }} />
     </motion.section>
   );
 }
 
 function EntryScene() {
   return (
-    <motion.section className="trade-scene trade-entry" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .36 }}>
-      <motion.img className="trade-media" src="/assets/tradeshow/chaufferie-entry.png" alt="Coupe technique du bâtiment menant à la chaufferie" initial={{ scale: 1.01, x: "0%", y: "0%" }} animate={{ scale: 1.09, x: "0%", y: "-5%" }} transition={{ duration: 1.3, ease: [0.65, 0, 0.35, 1] }} />
+    <motion.section className="trade-scene trade-entry" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .5 }}>
+      <motion.img className="trade-media" src="/assets/tradeshow/chaufferie-entry.png" alt="Coupe technique du bâtiment menant à la chaufferie" initial={{ scale: 1.005, x: "0%", y: "0%" }} animate={{ scale: 1.075, x: "0%", y: "-4%" }} transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1] }} />
       <div className="trade-vignette trade-vignette-soft" /><div className="trade-entry-label"><span>Accès zone technique</span><strong>Chaufferie</strong><i /></div>
     </motion.section>
   );
 }
 
 function RoomHeader({ complete, onBack }: { complete?: boolean; onBack: () => void }) {
-  return <div className="trade-room-header"><button className="trade-back" onClick={onBack} type="button"><ArrowLeft size={21} /> Retour au bâtiment</button><Progress complete={complete} /></div>;
+  return <div className="trade-room-header"><button className="trade-back" onClick={onBack} type="button"><ArrowLeft size={21} /> Retour au bâtiment</button><div className="trade-flow-name"><span>Parcours 01</span><strong>Chauffage collectif</strong></div><Progress complete={complete} /></div>;
 }
 
 function QuestionDrawer({ mode, onDiagnosis, onSolution }: { mode: "question" | "diagnosis"; onDiagnosis: () => void; onSolution: () => void }) {
@@ -73,20 +73,20 @@ function QuestionDrawer({ mode, onDiagnosis, onSolution }: { mode: "question" | 
   const [error, setError] = useState(false);
   const validate = () => selected === "Pression trop basse" ? onDiagnosis() : setError(true);
   return (
-    <motion.aside className="trade-drawer" initial={{ x: "105%" }} animate={{ x: 0 }} exit={{ x: "105%" }} transition={{ duration: .44, ease }}>
+    <motion.aside className="trade-drawer" initial={{ x: "105%", opacity: .65 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: .5 }} transition={{ duration: .52, ease }}>
       <AnimatePresence mode="wait">
         {mode === "question" ? (
           <motion.div key="question" className="trade-drawer-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}>
-            <span className="trade-drawer-step">Diagnostic · 01</span><div className="trade-drawer-icon"><Gauge size={26} /></div><h2>Que remarquez-vous&nbsp;?</h2><p>Observez le manomètre et identifiez l’anomalie.</p>
+            <span className="trade-flow-rail">Découverte <i /> Question <i /> Diagnostic <i /> Solution</span><span className="trade-drawer-step">Diagnostic visuel · 01</span><div className="trade-drawer-icon"><Gauge size={26} /></div><h2>Que remarquez-vous&nbsp;?</h2><p>Observez le manomètre et identifiez le signe visible.</p>
             <div className="trade-answers" role="radiogroup" aria-label="Réponses possibles">{ANSWERS.map((answer, index) => <button key={answer} className={selected === answer ? "is-selected" : ""} onClick={() => { setSelected(answer); setError(false); }} role="radio" aria-checked={selected === answer} type="button"><span>{String(index + 1).padStart(2, "0")}</span>{answer}<i /></button>)}</div>
             <AnimatePresence>{error && <motion.p className="trade-answer-error" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>Regardez de nouveau le manomètre.</motion.p>}</AnimatePresence>
             <button className="trade-primary" onClick={validate} disabled={!selected} type="button">Valider <ArrowRight size={20} /></button>
           </motion.div>
         ) : (
           <motion.div key="diagnosis" className="trade-drawer-content trade-diagnosis" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}>
-            <span className="trade-status"><i /><strong>Anomalie détectée</strong></span><span className="trade-drawer-step">Résultat du diagnostic</span><h2>Pression insuffisante</h2><p>Une pression insuffisante peut perturber la circulation du réseau et réduire les performances de l’installation.</p>
-            <div className="trade-consequences">{["Circulation perturbée", "Performance réduite", "Risque de dysfonctionnement"].map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
-            <button className="trade-primary" onClick={onSolution} type="button">Voir la solution AQUAPROX <ArrowRight size={20} /></button>
+            <span className="trade-status"><i /><strong>Anomalie détectée</strong></span><span className="trade-drawer-step">Résultat du diagnostic</span><h2>Pression insuffisante</h2><p>Une pression insuffisante peut signaler la présence d’air, perturber la circulation du réseau et réduire les performances de l’installation.</p>
+            <div className="trade-consequences">{["Circulation perturbée", "Débits anormaux", "Corrosion favorisée par l’oxygène"].map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
+            <button className="trade-primary" onClick={onSolution} type="button">Voir la correction AQUAPROX <ArrowRight size={20} /></button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -109,7 +109,7 @@ function BoilerRoomScene({ scene, onBack, onHotspot, onDiagnosis, onSolution }: 
 function RevealScene() {
   return (
     <motion.section className="trade-scene trade-reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <motion.img className="trade-media" src="/assets/tradeshow/chaufferie-before.png" alt="Chaufferie avant correction" animate={{ scale: 1.02 }} transition={{ duration: .45, ease }} /><motion.img className="trade-media trade-after" src="/assets/tradeshow/chaufferie-after.png" alt="Chaufferie après installation de la solution AQUAPROX" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.1, delay: .18, ease }} />
+      <motion.img className="trade-media" src="/assets/tradeshow/chaufferie-before.png" alt="Chaufferie avant correction" animate={{ scale: 1.018 }} transition={{ duration: .7, ease }} /><motion.img className="trade-media trade-after" src="/assets/tradeshow/chaufferie-after.png" alt="Chaufferie après installation de la solution AQUAPROX" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.35, delay: .24, ease }} />
       <div className="trade-reveal-glow" /><div className="trade-reveal-track"><span>Avant</span><i><b /></i><span>Après</span></div><motion.div className="trade-reveal-label" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .72 }}><Check size={17} /> Correction AQUAPROX</motion.div>
     </motion.section>
   );
@@ -129,7 +129,7 @@ export function TradeShowExperience() {
   const [completed, setCompleted] = useState(false);
   useEffect(() => {
     if (scene !== "buildingZoom" && scene !== "entry" && scene !== "reveal") return;
-    const durations: Partial<Record<Scene, number>> = { buildingZoom: 740, entry: 1300, reveal: 1550 };
+    const durations: Partial<Record<Scene, number>> = { buildingZoom: 820, entry: 1450, reveal: 1900 };
     const next: Partial<Record<Scene, Scene>> = { buildingZoom: "entry", entry: "room", reveal: "complete" };
     const timer = window.setTimeout(() => setScene(next[scene]!), durations[scene]);
     return () => window.clearTimeout(timer);
