@@ -2,15 +2,16 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./refined.css";
+import "./prototype.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  applicationName: "AQUAPROX — Révélez l’invisible",
-  title: "AQUAPROX — Révélez l’invisible",
-  description: "Explorez les risques invisibles du réseau d’eau de votre bâtiment.",
+  applicationName: "AQUAPROX — Diagnostic chaufferie",
+  title: "AQUAPROX — Diagnostic chaufferie",
+  description: "Une expérience tactile immersive pour identifier un risque réseau et découvrir la solution AQUAPROX.",
   robots: { index: false, follow: false },
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "AQUAPROX" },
 };

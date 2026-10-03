@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import type { RiskHotspot, RiskId } from "@/types/experience";
 
 type Props = {
@@ -59,9 +60,13 @@ function ApartmentFloor({ y, index }: { y: number; index: number }) {
 }
 
 export function BuildingVisual({ risks, activeRisk, revealed = new Set(), onSelect, ambient = false }: Props) {
+  const renderedRequested = process.env.NEXT_PUBLIC_VISUAL_MODE === "rendered";
+  const [renderAvailable, setRenderAvailable] = useState(renderedRequested);
+  const renderedActive = renderedRequested && renderAvailable;
+
   return (
-    <div className={`building-visual building-cutaway ${ambient ? "ambient" : ""}`}>
-      <svg viewBox="0 0 1000 660" role="img" aria-label="Bâtiment résidentiel en coupe montrant les logements, le local technique et le réseau d’eau">
+    <div className={`building-visual building-cutaway ${ambient ? "ambient" : ""} ${renderedActive ? "rendered-environment" : "vector-environment-active"}`}>
+      <svg viewBox="0 0 1000 660" role="img" aria-label="Immeuble collectif en coupe montrant la toiture, les logements, les gaines techniques et la chaufferie">
         <defs>
           <linearGradient id="technicalBackdrop" x1="0" y1="0" x2="0" y2="1">
             <stop stopColor="#153c50" />
@@ -76,18 +81,29 @@ export function BuildingVisual({ risks, activeRisk, revealed = new Set(), onSele
           <pattern id="technicalGrid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#62d8e9" strokeOpacity=".055"/></pattern>
         </defs>
 
+        {renderedRequested && <image className="rendered-overview" href="/assets/scenes/building/overview.webp" width="1000" height="660" preserveAspectRatio="xMidYMid meet" onError={() => setRenderAvailable(false)} />}
+
+        <g className="vector-environment">
         <rect width="1000" height="660" fill="url(#technicalGrid)" />
         <path d="M80 604H920" className="ground-line" />
         <path d="M113 621H873" className="ground-line secondary" />
 
         <motion.g
           filter="url(#cutawayShadow)"
-          animate={activeRisk ? { scale: 1.018, x: activeRisk === "stagnation" || activeRisk === "entartrage" ? -9 : 8 } : { scale: 1, x: 0 }}
+          animate={activeRisk ? { scale: 1.018, x: activeRisk === "ecs" || activeRisk === "entartrage" ? -9 : 8 } : { scale: 1, x: 0 }}
           transition={{ duration: .48, ease: [0.22, 1, 0.36, 1] }}
           style={{ transformOrigin: "48% 56%" }}
         >
           <path d="M130 132L458 53 808 126 765 154H155Z" className="roof" />
           <path d="M458 53L808 126 765 154 457 90Z" className="roof-side" />
+          <g className="roof-equipment" transform="translate(535 77) skewY(11)">
+            <rect width="105" height="38" rx="2" className="solar-panel" />
+            <path d="M26 0v38M52 0v38M78 0v38M0 19h105" />
+          </g>
+          <g className="heat-pump" transform="translate(682 100)">
+            <rect width="54" height="35" rx="3" />
+            <circle cx="20" cy="17" r="10" /><path d="M20 8v18M11 17h18" />
+          </g>
           <path d="M130 132L155 154V540L130 524Z" className="left-wall" />
           <path d="M765 154L808 126V523L765 540Z" className="right-wall" />
 
@@ -106,6 +122,14 @@ export function BuildingVisual({ risks, activeRisk, revealed = new Set(), onSele
               <path d="M12 16h58" className="tank-level" />
             </g>
             <text x="178" y="582" className="technical-label">LOCAL TECHNIQUE · TRAITEMENT</text>
+          </g>
+
+          <g className="zone-callouts">
+            <text x="824" y="118">TOITURE</text>
+            <text x="824" y="270">LOGEMENTS</text>
+            <text x="824" y="420">GAINES TECHNIQUES</text>
+            <text x="824" y="575">CHAUFFERIE</text>
+            <path d="M812 114h-27M812 266h-27M812 416h-27M812 571h-45" />
           </g>
 
           <g className="cold-network">
@@ -137,9 +161,10 @@ export function BuildingVisual({ risks, activeRisk, revealed = new Set(), onSele
         </motion.g>
 
         <g className="building-legend" transform="translate(130 628)">
-          <circle cx="0" cy="0" r="4" className="legend-cold"/><text x="12" y="4">EAU FROIDE</text>
-          <circle cx="102" cy="0" r="4" className="legend-hot"/><text x="114" y="4">EAU CHAUDE</text>
-          <circle cx="218" cy="0" r="4" className="legend-sensor"/><text x="230" y="4">POINT DE MESURE</text>
+          <circle cx="0" cy="0" r="4" className="legend-cold"/><text x="12" y="4">CHAUFFAGE</text>
+          <circle cx="102" cy="0" r="4" className="legend-hot"/><text x="114" y="4">BOUCLAGE ECS</text>
+          <circle cx="226" cy="0" r="4" className="legend-sensor"/><text x="238" y="4">POINT DE MESURE</text>
+        </g>
         </g>
 
         {!ambient && risks.map((risk) => {

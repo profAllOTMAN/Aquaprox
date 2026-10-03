@@ -1,6 +1,11 @@
 # AQUAPROX — Révélez l’invisible
 
-Expérience événementielle tactile-first en Next.js, conçue pour une borne, un stand TV, une tablette ou un mur LED. Le bâtiment interactif révèle les risques invisibles d’un réseau d’eau et introduit les expertises AQUAPROX.
+Expérience événementielle tactile-first en Next.js, conçue pour une borne, un stand TV, une tablette ou un mur LED. Le bâtiment interactif propose cinq diagnostics chauffage/ECS et révèle les solutions AQUAPROX dans une chaufferie avant/après.
+
+Le périmètre, le wireflow et le planning de production sont détaillés dans [docs/MVP-1-JOUR.md](docs/MVP-1-JOUR.md).
+Le contrat de livraison des rendus SIM 3D / Blender est détaillé dans [docs/BLENDER-ASSET-SPEC.md](docs/BLENDER-ASSET-SPEC.md).
+
+Le diagnostic « présence d’air » comprend une vue immersive semi-réaliste : exploration rapprochée, points techniques interactifs et comparaison avant/solution dans un cadrage parfaitement identique.
 
 ## Démarrage
 
@@ -28,7 +33,7 @@ npm run audit:production
 | Mur LED automatique | `/?mode=kiosk&display=wall&interaction=passive` |
 | Présentation pilotée par le staff | `/?mode=kiosk&display=tv&interaction=staff` |
 
-En mode staff : touches `1` à `5` pour les écrans, flèches/Page Up/Page Down pour avancer ou reculer, `R` ou `Home` pour recommencer.
+En mode staff : touches `1` à `4` pour les écrans, flèches/Page Up/Page Down pour avancer ou reculer, `R` ou `Home` pour recommencer.
 
 Le délai de reset peut être réglé entre 15 et 600 secondes avec `&idle=90`.
 

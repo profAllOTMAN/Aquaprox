@@ -1,5 +1,5 @@
-import { WaterExperience } from "@/components/experience/WaterExperience";
+import { TradeShowExperience } from "@/components/experience/TradeShowExperience";
 
 export default function Home() {
-  return <main><WaterExperience /></main>;
+  return <TradeShowExperience />;
 }

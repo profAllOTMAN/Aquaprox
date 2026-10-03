@@ -57,11 +57,11 @@ export function ExplorationScreen({ activeRisk, revealed, solved, onRisk, onSolv
   const panY = focus ? (50 - focus.y) * (zoom - 1) * .62 : 0;
 
   return <motion.section className="screen exploration-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-    <ScreenHeader label="02 — Habitat collectif · Exploration" onBack={onBack}/>
+    <ScreenHeader label="01 — Habitat collectif · Diagnostic" onBack={onBack}/>
     <div className="explore-heading">
-      <div><p className="eyebrow">Révélez l’invisible</p><h1>Explorez le <em>réseau d’eau</em></h1></div>
+      <div><p className="eyebrow">Observer · comprendre · traiter</p><h1>Diagnostiquez le <em>bâtiment</em></h1></div>
       <div className="experience-promise"><strong>Depuis 1989</strong><span>Audit · Ingénierie · Exploitation</span></div>
-      <div className="instruction"><span><Info/></span><p><strong>Choisissez un indice</strong> puis zoomez pour comprendre ce qu’il peut révéler.</p></div>
+      <div className="instruction"><span><Info/></span><p><strong>Repérez un signal visible</strong> puis suivez le diagnostic jusqu’à la solution AQUAPROX.</p></div>
     </div>
     <div className={`explore-layout ${activeRisk ? "panel-open" : ""}`}>
       <div className={`building-stage ${focus ? "is-focused" : ""}`}>
@@ -91,21 +91,21 @@ export function ExplorationScreen({ activeRisk, revealed, solved, onRisk, onSolv
             aria-live="polite"
           >
             <div className="clue-meta"><span><Search/> Indice {focusedRisk.index}</span><small>{focusedRisk.zone}</small></div>
-            <h2>Regardez de plus près.</h2>
+            <h2>Un signal mérite votre attention.</h2>
             <p>{focusedRisk.clue}</p>
             <div className="clue-detail"><ZoomIn/>{focusedRisk.clueDetail}</div>
-            <button className="reveal-risk" onClick={() => onRisk(focusedRisk)}>Révéler ce risque <ChevronRight/></button>
+            <button className="reveal-risk" onClick={() => onRisk(focusedRisk)}>Lancer le diagnostic <ChevronRight/></button>
             <small className="clue-disclaimer">Indice de sensibilisation — à confirmer par un audit AQUAPROX.</small>
           </motion.aside>}
         </AnimatePresence>
 
-        <div className="stage-floor"><span>Réseau d’eau sanitaire</span><span>Bâtiment A — 48 logements</span></div>
+        <div className="stage-floor"><span>Chauffage · ECS · traitement d’eau</span><span>Bâtiment A — 48 logements</span></div>
       </div>
       <AnimatePresence>{activeRisk && <RiskPanel risk={activeRisk} solved={solved.has(activeRisk.id)} onSolve={() => onSolve(activeRisk)} onClose={closePanel}/>}</AnimatePresence>
     </div>
     <div className="explore-footer">
       <div className="progress-block"><span><b>{revealed.size}</b> risque{revealed.size > 1 ? "s" : ""} révélé{revealed.size > 1 ? "s" : ""} sur 5</span><div className="progress-track"><motion.i animate={{ width: `${revealed.size * 20}%` }}/></div></div>
-      <button className={`score-shortcut ${revealed.size >= 2 ? "enabled" : ""}`} disabled={revealed.size < 2} onClick={onScore}><CircleGauge/><span><small>Votre simulation</small>Voir mon score de vigilance</span><ChevronRight/></button>
+      <button className={`score-shortcut ${revealed.size >= 1 ? "enabled" : ""}`} disabled={revealed.size < 1} onClick={onScore}><CircleGauge/><span><small>Votre progression</small>Voir mon bilan de vigilance</span><ChevronRight/></button>
     </div>
   </motion.section>;
 }

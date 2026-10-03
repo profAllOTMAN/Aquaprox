@@ -1,6 +1,5 @@
 export type ExperienceStep =
   | "attract"
-  | "building-selection"
   | "exploration"
   | "score"
   | "conversion";
@@ -8,11 +7,11 @@ export type ExperienceStep =
 export type Severity = "faible" | "moderee" | "elevee";
 
 export type RiskId =
-  | "corrosion"
-  | "stagnation"
-  | "temperature"
-  | "entartrage"
-  | "desequilibre";
+  | "embouage"
+  | "air"
+  | "equilibrage"
+  | "ecs"
+  | "entartrage";
 
 export interface RiskHotspot {
   id: RiskId;
@@ -23,7 +22,13 @@ export interface RiskHotspot {
   description: string;
   clue: string;
   clueDetail: string;
+  question: string;
+  answers: [string, string];
+  correctAnswer: number;
+  consequence: string;
   solution: string;
+  equipment: string;
+  equipmentDetail: string;
   value: string;
   expertise: string;
   x: number;
