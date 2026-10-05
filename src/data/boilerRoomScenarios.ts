@@ -14,6 +14,8 @@ export type BoilerRoomScenario = {
   description: string;
   consequences: string[];
   equipment: string;
+  mechanism: string;
+  benefit: string;
   solution: string;
   equipmentImage: string;
   detailImage?: string;
@@ -37,6 +39,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     description: "Les particules ferreuses témoignent d’une corrosion du réseau et peuvent dégrader les performances hydrauliques.",
     consequences: ["Circulation ralentie", "Rendement dégradé", "Usure des équipements"],
     equipment: "Filtre à barreaux magnétiques inox",
+    mechanism: "Capture magnétique",
+    benefit: "Hydraulique préservée",
     solution: "Il capte les particules ferreuses et contribue à préserver le bon fonctionnement de l’installation.",
     equipmentImage: "/assets/tradeshow/equipment/magnetic-filter.jpg",
     detailImage: "/assets/tradeshow/equipment/magnetic-bars.jpg",
@@ -58,6 +62,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     description: "Un défaut de pression peut signaler la présence d’air et perturber durablement la circulation du réseau.",
     consequences: ["Circulation perturbée", "Débits anormaux", "Corrosion favorisée par l’oxygène"],
     equipment: "Centrale de dégazage",
+    mechanism: "Extraction de l’air",
+    benefit: "Circulation stabilisée",
     solution: "Elle extrait l’air du réseau afin de stabiliser la circulation et de limiter les phénomènes de corrosion.",
     equipmentImage: "/assets/tradeshow/equipment/degassing-unit.jpg",
     imagePosition: "center 58%",
@@ -78,6 +84,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     description: "L’accumulation de calcaire réduit la section utile des canalisations et pénalise les échanges thermiques.",
     consequences: ["Débit réduit", "Consommation accrue", "Équipements fragilisés"],
     equipment: "Adoucisseur",
+    mechanism: "Adoucissement de l’eau",
+    benefit: "Échanges thermiques préservés",
     solution: "Il traite l’eau en amont pour limiter les dépôts et protéger durablement les installations de production.",
     equipmentImage: "/assets/tradeshow/equipment/water-softener.jpg",
     detailImage: "/assets/tradeshow/equipment/scale-deposit.jpg",
@@ -99,6 +107,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     description: "Sans dosage adapté, la qualité d’eau peut évoluer et réduire la protection globale des installations.",
     consequences: ["Protection incomplète", "Qualité d’eau instable", "Performance non maîtrisée"],
     equipment: "Poste de dosage",
+    mechanism: "Dosage contrôlé",
+    benefit: "Protection ajustée",
     solution: "Il ajuste le traitement de l’eau pour soutenir la protection et la performance de l’installation.",
     equipmentImage: "/assets/tradeshow/equipment/dosing-station.jpg",
     imagePosition: "center 35%",
