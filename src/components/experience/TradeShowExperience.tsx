@@ -2,16 +2,16 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, Droplets, FlaskConical, Gauge, Maximize2, RotateCcw, ShieldCheck, Wind, Wrench, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
 
-type Scene = "building" | "buildingZoom" | "entry" | "room" | "question" | "diagnosis" | "reveal" | "complete";
+type Scene = "building" | "buildingFocus" | "buildingZoom" | "entry" | "room" | "question" | "diagnosis" | "reveal" | "complete";
 
 export const BUILDING_ZONES = [
-  { id: "logements", label: "Logements", x: 25, y: 33 },
-  { id: "gaines", label: "Gaines techniques", x: 50, y: 31 },
-  { id: "toiture", label: "Toiture", x: 72, y: 18 },
-  { id: "chaufferie", label: "Chaufferie", x: 52, y: 78 },
+  { id: "logements", label: "Logements", x: 75, y: 25 },
+  { id: "gaines", label: "Gaines techniques", x: 27, y: 20 },
+  { id: "toiture", label: "Toiture", x: 82, y: 10 },
+  { id: "chaufferie", label: "Chaufferie", x: 53, y: 76 },
 ] as const;
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -41,28 +41,36 @@ function Progress({ count }: { count: number }) {
   return <div className={`trade-progress ${complete ? "is-complete" : ""}`}><span>{complete ? <Check size={15} strokeWidth={3} /> : <Gauge size={16} />}</span><strong>{count} / {boilerRoomScenarios.length}</strong> risques identifiés</div>;
 }
 
-function ZoneMarker({ zone, completedCount, onSelect, onHover }: { zone: (typeof BUILDING_ZONES)[number]; completedCount: number; onSelect: () => void; onHover: (active: boolean) => void }) {
+function ZoneMarker({ zone, completedCount, focused, onSelect, onHover }: { zone: (typeof BUILDING_ZONES)[number]; completedCount: number; focused: boolean; onSelect: () => void; onHover: (active: boolean) => void }) {
   const active = zone.id === "chaufferie";
   const complete = active && completedCount > 0;
   return (
-    <button className={`trade-zone ${active ? "is-active" : ""} ${complete ? "is-complete" : ""}`} style={{ left: `${zone.x}%`, top: `${zone.y}%` }} onClick={onSelect} onPointerEnter={() => active && onHover(true)} onPointerLeave={() => active && onHover(false)} onFocus={() => active && onHover(true)} onBlur={() => active && onHover(false)} type="button" aria-label={complete ? `${zone.label}, ${completedCount} risques identifiés` : zone.label}>
-      <span className="trade-zone-pulse" /><span className="trade-zone-core">{complete ? <Check size={17} strokeWidth={3} /> : "+"}</span><span className="trade-zone-label">{complete ? `✓ ${zone.label}` : zone.label}</span>
-    </button>
+    <motion.button className={`trade-zone ${active ? "is-active" : ""} ${complete ? "is-complete" : ""} ${focused ? "is-focused" : ""}`} style={{ left: `${zone.x}%`, top: `${zone.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .32, ease }} onClick={onSelect} onPointerEnter={() => active && onHover(true)} onPointerLeave={() => active && onHover(false)} onFocus={() => active && onHover(true)} onBlur={() => active && onHover(false)} disabled={focused} type="button" aria-label={complete ? `${zone.label}, ${completedCount} risques identifiés` : zone.label}>
+      <span className="trade-zone-pulse" /><span className="trade-zone-core">{focused || complete ? <Check size={17} strokeWidth={3} /> : "+"}</span><span className="trade-zone-label">{focused ? "Accès chaufferie" : complete ? `✓ ${zone.label}` : zone.label}</span>
+    </motion.button>
   );
 }
 
 function BuildingScene({ scene, completedCount, onEnter }: { scene: Scene; completedCount: number; onEnter: () => void }) {
   const [hovered, setHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  useEffect(() => { videoRef.current?.play().catch(() => undefined); }, []);
+  const selecting = scene !== "building";
+  const holdOpeningFrame = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
+    video.currentTime = 0;
+  }, []);
+  useEffect(() => { holdOpeningFrame(); }, [holdOpeningFrame]);
+  const visibleZones = scene === "buildingFocus" ? BUILDING_ZONES.filter((zone) => zone.id === "chaufferie") : BUILDING_ZONES;
   return (
-    <motion.section className="trade-scene trade-building" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
-      <motion.div className="trade-media-wrap" animate={scene === "buildingZoom" ? { scale: 1.16, x: "-2%", y: "-9%" } : { scale: 1, x: 0, y: 0 }} transition={{ duration: .82, ease }}><video ref={videoRef} className="trade-media" autoPlay muted loop playsInline preload="auto"><source src="/assets/tradeshow/building-loop.mp4" type="video/mp4" /></video></motion.div>
-      <div className="trade-vignette" /><motion.div className="trade-basement-focus" animate={{ opacity: hovered ? 1 : 0 }} /><Brand />
+    <motion.section className={`trade-scene trade-building ${selecting ? "is-selecting" : ""} ${scene === "buildingZoom" ? "is-zooming" : ""}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
+      <motion.div className="trade-media-wrap" animate={scene === "buildingZoom" ? { scale: 1.16, x: "-2%", y: "-9%" } : { scale: 1, x: 0, y: 0 }} transition={{ duration: .82, ease }}><video ref={videoRef} className="trade-media" muted playsInline preload="auto" onLoadedData={holdOpeningFrame}><source src="/assets/tradeshow/building-loop.mp4" type="video/mp4" /></video></motion.div>
+      <div className="trade-vignette" /><motion.div className="trade-basement-focus" animate={{ opacity: hovered || selecting ? 1 : 0 }} transition={{ duration: .38, ease }} /><Brand />
       <div className="trade-scene-title"><span>{completedCount ? "Diagnostic en cours" : "Vue d’ensemble"}</span><h1>{completedCount ? "Poursuivez le diagnostic du bâtiment" : "Explorez les zones techniques du bâtiment"}</h1></div>
-      <AnimatePresence>{scene === "building" && <motion.div className="trade-zone-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{BUILDING_ZONES.map((zone) => <ZoneMarker key={zone.id} zone={zone} completedCount={completedCount} onHover={setHovered} onSelect={() => zone.id === "chaufferie" && onEnter()} />)}</motion.div>}</AnimatePresence>
+      {(scene === "building" || scene === "buildingFocus") && <div className="trade-zone-layer"><AnimatePresence>{visibleZones.map((zone) => <ZoneMarker key={zone.id} zone={zone} completedCount={completedCount} focused={scene === "buildingFocus"} onHover={setHovered} onSelect={() => zone.id === "chaufferie" && onEnter()} />)}</AnimatePresence></div>}
       {completedCount > 0 && <div className="trade-building-score"><CheckCircle2 size={18} /> {completedCount} / {boilerRoomScenarios.length} risques identifiés</div>}
-      <div className="trade-hint"><span /> Touchez une zone pour l’explorer</div><motion.div className="trade-zoom-shade" animate={{ opacity: scene === "buildingZoom" ? .26 : 0 }} transition={{ duration: .6, ease }} />
+      <div className="trade-hint"><span /> Touchez une zone pour l’explorer</div><motion.div className="trade-zoom-shade" animate={{ opacity: scene === "buildingZoom" ? .26 : scene === "buildingFocus" ? .08 : 0 }} transition={{ duration: .6, ease }} />
     </motion.section>
   );
 }
@@ -124,16 +132,16 @@ export function TradeShowExperience() {
   const [solved, setSolved] = useState<Set<string>>(new Set());
   const active = boilerRoomScenarios.find((item) => item.id === activeId) ?? boilerRoomScenarios[0];
   useEffect(() => {
-    if (scene !== "buildingZoom" && scene !== "entry" && scene !== "reveal") return;
-    const durations: Partial<Record<Scene, number>> = { buildingZoom: 820, entry: 1450, reveal: 2800 };
-    const next: Partial<Record<Scene, Scene>> = { buildingZoom: "entry", entry: "room", reveal: "complete" };
+    if (scene !== "buildingFocus" && scene !== "buildingZoom" && scene !== "entry" && scene !== "reveal") return;
+    const durations: Partial<Record<Scene, number>> = { buildingFocus: 480, buildingZoom: 820, entry: 1450, reveal: 2800 };
+    const next: Partial<Record<Scene, Scene>> = { buildingFocus: "buildingZoom", buildingZoom: "entry", entry: "room", reveal: "complete" };
     const timer = window.setTimeout(() => setScene(next[scene]!), durations[scene]);
     return () => window.clearTimeout(timer);
   }, [scene]);
   const openScenario = (scenario: BoilerRoomScenario) => { setActiveId(scenario.id); setScene("question"); };
   const showSolution = () => { setSolved((current) => new Set(current).add(active.id)); setScene("reveal"); };
   return <main className="trade-experience"><AnimatePresence mode="sync" initial={false}>
-    {(scene === "building" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} completedCount={solved.size} onEnter={() => setScene("buildingZoom")} />}
+    {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} completedCount={solved.size} onEnter={() => setScene("buildingFocus")} />}
     {scene === "entry" && <EntryScene key="entry" />}
     {(scene === "room" || scene === "question" || scene === "diagnosis") && <BoilerRoomScene key="room" scene={scene} active={active} solved={solved} onBack={() => setScene("building")} onHotspot={openScenario} onDiagnosis={() => setScene("diagnosis")} onSolution={showSolution} />}
     {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} />}
