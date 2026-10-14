@@ -10,6 +10,7 @@ export type BoilerRoomScenario = {
   answers: string[];
   correctAnswer: string;
   retryMessage: string;
+  assistedHint: string;
   diagnosis: string;
   description: string;
   consequences: string[];
@@ -39,7 +40,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     prompt: "Identifiez la matière captée sur les barreaux du filtre.",
     answers: ["Calcaire", "Particules ferreuses", "Sable", "Condensation"],
     correctAnswer: "Particules ferreuses",
-    retryMessage: "Observez la couleur et la texture du dépôt.",
+    retryMessage: "Bien essayé. Observez sa couleur sombre et sa texture : ce dépôt vient du métal du réseau.",
+    assistedHint: "Pensez à ce qu’un aimant peut retenir : cherchez la réponse liée au fer.",
     diagnosis: "Corrosion et embouage",
     description: "Les oxydes métalliques et les boues freinent la circulation et finissent par pénaliser les émetteurs.",
     consequences: ["Circulation ralentie", "Rendement dégradé", "Usure des équipements"],
@@ -67,7 +69,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     prompt: "Observez le manomètre et identifiez le signe visible.",
     answers: ["Pression normale", "Pression trop basse", "Température élevée", "Présence de tartre"],
     correctAnswer: "Pression trop basse",
-    retryMessage: "Regardez de nouveau le manomètre.",
+    retryMessage: "Vous êtes proche. Regardez de nouveau la position de l’aiguille sur le manomètre.",
+    assistedHint: "L’aiguille se situe sous la plage normale : choisissez la pression correspondante.",
     diagnosis: "Présence d’air dans le réseau",
     description: "L’air libre et les gaz dissous perturbent la circulation, génèrent du bruit et favorisent la corrosion par l’oxygène.",
     consequences: ["Circulation perturbée", "Débits anormaux", "Corrosion favorisée par l’oxygène"],
@@ -95,7 +98,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     prompt: "Examinez l’intérieur de la canalisation.",
     answers: ["Corrosion", "Dépôt calcaire", "Présence d’air", "Pression excessive"],
     correctAnswer: "Dépôt calcaire",
-    retryMessage: "Observez la matière claire qui réduit le passage de l’eau.",
+    retryMessage: "Bien tenté. Observez la matière claire et dure qui réduit le passage de l’eau.",
+    assistedHint: "Ce dépôt minéral est produit par une eau dure : cherchez la réponse liée au calcaire.",
     diagnosis: "Entartrage de l’installation",
     description: "Le calcium et le magnésium présents dans l’eau dure peuvent former du tartre, réduire le passage utile et isoler les surfaces d’échange.",
     consequences: ["Débit réduit", "Consommation accrue", "Équipements fragilisés"],
@@ -123,7 +127,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     prompt: "Identifiez l’action nécessaire pour protéger la qualité de l’eau.",
     answers: ["Une ventilation", "Un poste de dosage", "Un vase d’expansion", "Un compteur"],
     correctAnswer: "Un poste de dosage",
-    retryMessage: "Cherchez l’équipement qui injecte précisément le produit de traitement.",
+    retryMessage: "Bonne réflexion. Cherchez l’équipement qui injecte précisément le produit de traitement.",
+    assistedHint: "Il manque le poste qui dose et injecte le traitement dans le réseau.",
     diagnosis: "Protection chimique insuffisante",
     description: "Sans concentration maîtrisée, le réseau reste exposé à la corrosion, aux boues et aux dépôts qui réduisent l’échange thermique.",
     consequences: ["Protection incomplète", "Qualité d’eau instable", "Performance non maîtrisée"],

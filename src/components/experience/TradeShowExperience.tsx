@@ -15,6 +15,8 @@ export const BUILDING_ZONES = [
 ] as const;
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const BOILER_ROOM_BEFORE = "/assets/tradeshow/chaufferie-before.jpg";
+const BOILER_ROOM_AFTER_FILTER = "/assets/tradeshow/chaufferie-after.jpg";
 
 function ScenarioIcon({ id, size = 21 }: { id: string; size?: number }) {
   if (id === "corrosion-boues") return <ShieldCheck size={size} />;
@@ -108,7 +110,7 @@ function BuildingScene({ scene, completedCount, onEnter, onVideoComplete }: { sc
 }
 
 function EntryScene() {
-  return <motion.section className="trade-scene trade-entry" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .42 }}><motion.img className="trade-media" src="/assets/tradeshow/chaufferie-network.jpg" alt="Arrivée dans la chaufferie collective" initial={{ scale: 1.01 }} animate={{ scale: 1.035 }} transition={{ duration: 1.1, ease }} /><div className="trade-vignette trade-vignette-soft" /><div className="trade-entry-label"><span>Mission diagnostic</span><strong>Chaufferie</strong><i /></div></motion.section>;
+  return <motion.section className="trade-scene trade-entry" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .42 }}><motion.img className="trade-media" src={BOILER_ROOM_BEFORE} alt="Arrivée dans la chaufferie collective avant intervention" fetchPriority="high" initial={{ scale: 1.01 }} animate={{ scale: 1.035 }} transition={{ duration: 1.1, ease }} /><div className="trade-vignette trade-vignette-soft" /><div className="trade-entry-label"><span>Mission diagnostic</span><strong>Chaufferie</strong><i /></div></motion.section>;
 }
 
 function RoomHeader({ count, onBack }: { count: number; onBack: () => void }) {
@@ -118,14 +120,29 @@ function RoomHeader({ count, onBack }: { count: number; onBack: () => void }) {
 function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario: BoilerRoomScenario; mode: "question" | "diagnosis"; onDiagnosis: () => void; onSolution: () => void }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [error, setError] = useState(false);
-  const validate = () => selected === scenario.correctAnswer ? onDiagnosis() : setError(true);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [wrongAnswers, setWrongAnswers] = useState<Set<string>>(new Set());
+  const validate = () => {
+    if (selected === scenario.correctAnswer) {
+      onDiagnosis();
+      return;
+    }
+    if (selected) setWrongAnswers((current) => new Set(current).add(selected));
+    setWrongAttempts((current) => current + 1);
+    setSelected(null);
+    setError(true);
+  };
   return (
     <motion.aside className="trade-drawer" initial={{ x: "105%", opacity: .65 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: .5 }} transition={{ duration: .52, ease }}>
       <AnimatePresence mode="wait">
         {mode === "question" ? <motion.div key={`question-${scenario.id}`} className="trade-drawer-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}>
           <span className="trade-flow-rail"><b>Risque identifié</b><i /><b>Diagnostic</b><i />Solution<i />Révélation</span><span className="trade-drawer-step">Diagnostic visuel · {scenario.index}</span><div className="trade-drawer-icon"><ScenarioIcon id={scenario.id} size={26} /></div><h2>{scenario.question}</h2><p>{scenario.prompt}</p>
-          <div className="trade-answers" role="radiogroup" aria-label="Réponses possibles">{scenario.answers.map((answer, index) => <button key={answer} className={selected === answer ? "is-selected" : ""} onClick={() => { setSelected(answer); setError(false); }} role="radio" aria-checked={selected === answer} type="button"><span>{String(index + 1).padStart(2, "0")}</span>{answer}<i /></button>)}</div>
-          <AnimatePresence>{error && <motion.p className="trade-answer-error" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>{scenario.retryMessage}</motion.p>}</AnimatePresence><button className="trade-primary" onClick={validate} disabled={!selected} type="button">Confirmer le diagnostic <ArrowRight size={20} /></button>
+          <div className="trade-answers" role="radiogroup" aria-label="Réponses possibles">{scenario.answers.map((answer, index) => {
+            const wasWrong = wrongAnswers.has(answer);
+            const guided = wrongAttempts >= 2 && answer === scenario.correctAnswer;
+            return <button key={answer} className={`${selected === answer ? "is-selected" : ""} ${wasWrong ? "is-wrong" : ""} ${guided ? "is-guided" : ""}`} onClick={() => { setSelected(answer); setError(false); }} role="radio" aria-checked={selected === answer} disabled={wasWrong} type="button"><span>{String(index + 1).padStart(2, "0")}</span>{answer}{guided && <small>Indice</small>}<i /></button>;
+          })}</div>
+          <AnimatePresence>{error && <motion.div className="trade-answer-help" initial={{ opacity: 0, y: 7 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}><span>Indice {Math.min(wrongAttempts, 2)} / 2</span><strong>{wrongAttempts >= 2 ? "On vous guide" : "Bien essayé"}</strong><p>{wrongAttempts >= 2 ? scenario.assistedHint : scenario.retryMessage}</p></motion.div>}</AnimatePresence><button className="trade-primary" onClick={validate} disabled={!selected} type="button">Confirmer le diagnostic <ArrowRight size={20} /></button>
         </motion.div> : <motion.div key={`diagnosis-${scenario.id}`} className="trade-drawer-content trade-diagnosis" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}>
           <span className="trade-status"><i /><strong>Diagnostic confirmé</strong></span><span className="trade-drawer-step">Risque {scenario.index}</span><h2>{scenario.diagnosis}</h2><p>{scenario.description}</p>
           <div className="trade-consequences">{scenario.consequences.map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
@@ -139,9 +156,10 @@ function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario:
 
 function BoilerRoomScene({ scene, active, solved, onBack, onHotspot, onDiagnosis, onSolution }: { scene: Scene; active: BoilerRoomScenario; solved: Set<string>; onBack: () => void; onHotspot: (scenario: BoilerRoomScenario) => void; onDiagnosis: () => void; onSolution: () => void }) {
   const drawerOpen = scene === "question" || scene === "diagnosis";
+  const filterInstalled = solved.has("corrosion-boues");
   return (
     <motion.section className="trade-scene trade-room" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
-      <img className="trade-media" src="/assets/tradeshow/chaufferie-network.jpg" alt="Chaufferie avant actions correctives" /><div className={`trade-room-shade ${drawerOpen ? "is-open" : ""}`} /><RoomHeader count={solved.size} onBack={onBack} />
+      <AnimatePresence initial={false}><motion.img key={filterInstalled ? "room-after" : "room-before"} className="trade-media trade-room-state-image" src={filterInstalled ? BOILER_ROOM_AFTER_FILTER : BOILER_ROOM_BEFORE} alt={filterInstalled ? "Chaufferie avec filtre magnétique AQUAPROX installé" : "Chaufferie avant actions correctives"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .65, ease }} /></AnimatePresence><div className={`trade-room-shade ${drawerOpen ? "is-open" : ""}`} /><RoomHeader count={solved.size} onBack={onBack} />
       <AnimatePresence>{!drawerOpen && boilerRoomScenarios.map((scenario) => solved.has(scenario.id)
         ? <InstalledEquipment key={`installed-${scenario.id}`} scenario={scenario} onSelect={() => onHotspot(scenario)} />
         : <motion.button key={scenario.id} className="trade-risk-hotspot" style={{ left: `${scenario.x}%`, top: `${scenario.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => onHotspot(scenario)} type="button" aria-label={`Inspecter : ${scenario.signalLabel}`}><span className="trade-risk-radar" /><span className="trade-risk-core"><ScenarioIcon id={scenario.id} /></span><strong><small>{scenario.index}</small>{scenario.signalLabel}</strong></motion.button>)}</AnimatePresence>
@@ -151,12 +169,15 @@ function BoilerRoomScene({ scene, active, solved, onBack, onHotspot, onDiagnosis
   );
 }
 
-function RevealScene({ scenario }: { scenario: BoilerRoomScenario }) {
+function RevealScene({ scenario, filterInstalled }: { scenario: BoilerRoomScenario; filterInstalled: boolean }) {
+  const hasPhotographicAfter = scenario.id === "corrosion-boues";
+  const startingRoomImage = !hasPhotographicAfter && filterInstalled ? BOILER_ROOM_AFTER_FILTER : BOILER_ROOM_BEFORE;
   return (
     <motion.section className="trade-scene trade-reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <img className="trade-media" src="/assets/tradeshow/chaufferie-network.jpg" alt="Même chaufferie pendant l’installation de la correction AQUAPROX" />
+      <img className="trade-media trade-scene-image-layer" src={startingRoomImage} alt="Chaufferie avant installation de la correction AQUAPROX" />
+      {hasPhotographicAfter && <motion.img className="trade-media trade-scene-image-layer trade-after-scene" src={BOILER_ROOM_AFTER_FILTER} alt="Même chaufferie avec le filtre magnétique AQUAPROX installé" initial={{ opacity: .15, clipPath: "inset(0 100% 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 1.35, ease }} />}
       <div className="trade-complete-vignette" />
-      <motion.div className="trade-after-wash" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 1.25, ease }} />
+      <motion.div className="trade-after-wash" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 1.35, ease }} />
       <div className="trade-reveal-track"><span>Avant · risque identifié</span><i><b /></i><span>Après · réseau protégé</span></div>
       <motion.div className="trade-install-beacon" style={{ left: `${scenario.x}%`, top: `${scenario.y}%` }} initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .55, duration: .7, ease }}>
         <span><EquipmentMedia scenario={scenario} /></span><i /><b />
@@ -168,11 +189,15 @@ function RevealScene({ scenario }: { scenario: BoilerRoomScenario }) {
   );
 }
 
-function CompleteScene({ scenario, count, allSolved, onExplore, onBack }: { scenario: BoilerRoomScenario; count: number; allSolved: boolean; onExplore: () => void; onBack: () => void }) {
+function CompleteScene({ scenario, count, allSolved, filterInstalled, onExplore, onBack }: { scenario: BoilerRoomScenario; count: number; allSolved: boolean; filterInstalled: boolean; onExplore: () => void; onBack: () => void }) {
   const [view, setView] = useState<"before" | "after">("after");
+  const hasPhotographicAfter = scenario.id === "corrosion-boues";
+  const roomImage = hasPhotographicAfter
+    ? (view === "after" ? BOILER_ROOM_AFTER_FILTER : BOILER_ROOM_BEFORE)
+    : (filterInstalled ? BOILER_ROOM_AFTER_FILTER : BOILER_ROOM_BEFORE);
   return (
     <motion.section className={`trade-scene trade-complete is-${view}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <img className="trade-media" src="/assets/tradeshow/chaufferie-network.jpg" alt={view === "after" ? "Chaufferie avec solution AQUAPROX installée" : "Chaufferie avant correction"} />
+      <AnimatePresence initial={false}><motion.img key={`${scenario.id}-${view}`} className="trade-media trade-room-state-image" src={roomImage} alt={view === "after" ? "Chaufferie avec solution AQUAPROX installée" : "Chaufferie avant correction"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .58, ease }} /></AnimatePresence>
       <div className="trade-complete-vignette" />
       <RoomHeader count={count} onBack={onBack} />
       <div className="trade-compare" role="group" aria-label="Comparer la chaufferie avant et après la correction">
@@ -223,6 +248,14 @@ export function TradeShowExperience() {
   const [solved, setSolved] = useState<Set<string>>(new Set());
   const active = boilerRoomScenarios.find((item) => item.id === activeId) ?? boilerRoomScenarios[0];
   useEffect(() => {
+    [BOILER_ROOM_BEFORE, BOILER_ROOM_AFTER_FILTER].forEach((source) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = source;
+      image.decode().catch(() => undefined);
+    });
+  }, []);
+  useEffect(() => {
     if (scene !== "buildingFocus" && scene !== "entry" && scene !== "reveal") return;
     const durations: Partial<Record<Scene, number>> = { buildingFocus: 480, entry: 1100, reveal: 3000 };
     const next: Partial<Record<Scene, Scene>> = { buildingFocus: "buildingZoom", entry: "room", reveal: "complete" };
@@ -235,7 +268,7 @@ export function TradeShowExperience() {
     {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} completedCount={solved.size} onEnter={() => setScene("buildingFocus")} onVideoComplete={() => setScene("entry")} />}
     {scene === "entry" && <EntryScene key="entry" />}
     {(scene === "room" || scene === "question" || scene === "diagnosis") && <BoilerRoomScene key="room" scene={scene} active={active} solved={solved} onBack={() => setScene("building")} onHotspot={openScenario} onDiagnosis={() => setScene("diagnosis")} onSolution={showSolution} />}
-    {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} />}
-    {scene === "complete" && <CompleteScene key={`complete-${active.id}`} scenario={active} count={solved.size} allSolved={solved.size === boilerRoomScenarios.length} onExplore={() => setScene("room")} onBack={() => setScene("building")} />}
+    {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} filterInstalled={solved.has("corrosion-boues")} />}
+    {scene === "complete" && <CompleteScene key={`complete-${active.id}`} scenario={active} count={solved.size} allSolved={solved.size === boilerRoomScenarios.length} filterInstalled={solved.has("corrosion-boues")} onExplore={() => setScene("room")} onBack={() => setScene("building")} />}
   </AnimatePresence></main>;
 }
