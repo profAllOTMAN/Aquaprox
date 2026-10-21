@@ -1,17 +1,17 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, Droplets, FlaskConical, Gauge, RotateCcw, ShieldCheck, Wind, Wrench } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, Droplets, FlaskConical, Gauge, RotateCcw, ShieldCheck, Wrench } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
 
 type Scene = "building" | "buildingFocus" | "buildingZoom" | "entry" | "room" | "question" | "diagnosis" | "reveal" | "complete";
 
 export const BUILDING_ZONES = [
-  { id: "logements", label: "Logements", x: 75, y: 25 },
-  { id: "gaines", label: "Gaines techniques", x: 53, y: 38 },
-  { id: "toiture", label: "Toiture", x: 70, y: 9 },
-  { id: "chaufferie", label: "Chaufferie", x: 54, y: 80 },
+  { id: "logements", label: "Logements", x: 64, y: 29 },
+  { id: "gaines", label: "Gaines techniques", x: 51, y: 39 },
+  { id: "toiture", label: "Toiture", x: 60, y: 9 },
+  { id: "chaufferie", label: "Chaufferie", x: 54, y: 82 },
 ] as const;
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -20,7 +20,7 @@ const BOILER_ROOM_AFTER_FILTER = "/assets/tradeshow/chaufferie-after.jpg";
 
 function ScenarioIcon({ id, size = 21 }: { id: string; size?: number }) {
   if (id === "corrosion-boues") return <ShieldCheck size={size} />;
-  if (id === "air-degazage") return <Wind size={size} />;
+  if (id === "air-degazage") return <Gauge size={size} />;
   if (id === "entartrage") return <Droplets size={size} />;
   return <FlaskConical size={size} />;
 }
@@ -35,6 +35,7 @@ function ImpactGraph({ scenario, compact = false }: { scenario: BoilerRoomScenar
 }
 
 function EquipmentMedia({ scenario, className = "" }: { scenario: BoilerRoomScenario; className?: string }) {
+  if (!scenario.motionVideo) return <motion.img className={className} src={scenario.equipmentImage} alt={scenario.equipment} animate={{ scale: [1, 1.035, 1] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} />;
   return <video className={className} src={scenario.motionVideo} poster={scenario.equipmentImage} aria-label={`Animation technique : ${scenario.equipment}`} autoPlay muted loop playsInline preload="metadata" />;
 }
 
@@ -58,7 +59,7 @@ function InstalledEquipment({ scenario, active = false, onSelect }: { scenario: 
 }
 
 function Brand() {
-  return <div className="trade-brand" aria-label="AQUAPROX"><span className="trade-brand-name">AQUA<strong>PROX</strong></span><span>Diagnostic réseau</span></div>;
+  return <div className="trade-brand" aria-label="AQUAPROX"><img src="/assets/brand/aquaprox-logo-official.png" alt="AQUAPROX" /></div>;
 }
 
 function Progress({ count }: { count: number }) {
@@ -101,7 +102,7 @@ function BuildingScene({ scene, completedCount, onEnter, onVideoComplete }: { sc
     <motion.section className={`trade-scene trade-building ${selecting ? "is-selecting" : ""} ${scene === "buildingZoom" ? "is-zooming" : ""}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
       <motion.div className="trade-media-wrap" animate={{ scale: 1, x: 0, y: 0 }}><video ref={videoRef} className="trade-media" poster="/assets/tradeshow/building-overview.jpg" muted playsInline preload="auto" onLoadedData={() => scene !== "buildingZoom" && holdOpeningFrame()} onEnded={onVideoComplete} onError={onVideoComplete}><source src="/assets/tradeshow/motion/building-to-chaufferie.mp4" type="video/mp4" /></video></motion.div>
       <div className="trade-vignette" /><motion.div className="trade-basement-focus" animate={{ opacity: hovered || selecting ? 1 : 0 }} transition={{ duration: .38, ease }} /><Brand />
-      <div className="trade-scene-title"><span>{completedCount ? "Diagnostic en cours" : "Vue d’ensemble"}</span><h1>{completedCount ? "Poursuivez le diagnostic du bâtiment" : "Explorez les zones techniques du bâtiment"}</h1></div>
+      <div className="trade-scene-title"><span>{completedCount ? "Diagnostic en cours" : "Mission AQUAPROX"}</span><h1>{completedCount ? "Poursuivez le diagnostic du bâtiment" : "Saurez-vous repérer les risques cachés dans ce bâtiment ?"}</h1><p>Explorez les zones techniques et révélez les solutions adaptées.</p></div>
       {(scene === "building" || scene === "buildingFocus") && <div className="trade-zone-layer"><AnimatePresence>{visibleZones.map((zone) => <ZoneMarker key={zone.id} zone={zone} completedCount={completedCount} focused={scene === "buildingFocus"} onHover={setHovered} onSelect={() => zone.id === "chaufferie" && onEnter()} />)}</AnimatePresence></div>}
       {completedCount > 0 && <div className="trade-building-score"><CheckCircle2 size={18} /> {completedCount} / {boilerRoomScenarios.length} risques identifiés</div>}
       <div className="trade-hint"><span /> Touchez une zone pour l’explorer</div><motion.div className="trade-zoom-shade" animate={{ opacity: scene === "buildingZoom" ? .05 : scene === "buildingFocus" ? .08 : 0 }} transition={{ duration: .6, ease }} />
@@ -117,7 +118,7 @@ function RoomHeader({ count, onBack }: { count: number; onBack: () => void }) {
   return <div className="trade-room-header"><button className="trade-back" onClick={onBack} type="button"><ArrowLeft size={21} /> Retour au bâtiment</button><div className="trade-flow-name"><span>Parcours diagnostic</span><strong>Chauffage collectif</strong></div><Progress count={count} /></div>;
 }
 
-function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario: BoilerRoomScenario; mode: "question" | "diagnosis"; onDiagnosis: () => void; onSolution: () => void }) {
+function QuestionDrawer({ scenario, mode, onBackToRoom, onDiagnosis, onSolution }: { scenario: BoilerRoomScenario; mode: "question" | "diagnosis"; onBackToRoom: () => void; onDiagnosis: () => void; onSolution: () => void }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
@@ -136,7 +137,7 @@ function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario:
     <motion.aside className="trade-drawer" initial={{ x: "105%", opacity: .65 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: .5 }} transition={{ duration: .52, ease }}>
       <AnimatePresence mode="wait">
         {mode === "question" ? <motion.div key={`question-${scenario.id}`} className="trade-drawer-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}>
-          <span className="trade-flow-rail"><b>Risque identifié</b><i /><b>Diagnostic</b><i />Solution<i />Révélation</span><span className="trade-drawer-step">Diagnostic visuel · {scenario.index}</span><div className="trade-drawer-icon"><ScenarioIcon id={scenario.id} size={26} /></div><h2>{scenario.question}</h2><p>{scenario.prompt}</p>
+          <button className="trade-drawer-back" onClick={onBackToRoom} type="button"><ArrowLeft size={18} /> Retour à la chaufferie</button><span className="trade-flow-rail"><b>Risque identifié</b><i /><b>Diagnostic</b><i />Solution<i />Révélation</span><span className="trade-drawer-step">Diagnostic visuel · {scenario.index}</span><figure className="trade-evidence"><img src={scenario.detailImage ?? scenario.equipmentImage} alt={`Indice visuel : ${scenario.signalLabel}`} style={{ objectPosition: scenario.imagePosition }} /><figcaption><small>Indice à observer</small><strong>{scenario.signalLabel}</strong></figcaption></figure><div className="trade-drawer-icon"><ScenarioIcon id={scenario.id} size={26} /></div><h2>{scenario.question}</h2><p>{scenario.prompt}</p>
           <div className="trade-answers" role="radiogroup" aria-label="Réponses possibles">{scenario.answers.map((answer, index) => {
             const wasWrong = wrongAnswers.has(answer);
             const guided = wrongAttempts >= 2 && answer === scenario.correctAnswer;
@@ -144,9 +145,9 @@ function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario:
           })}</div>
           <AnimatePresence>{error && <motion.div className="trade-answer-help" initial={{ opacity: 0, y: 7 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}><span>Indice {Math.min(wrongAttempts, 2)} / 2</span><strong>{wrongAttempts >= 2 ? "On vous guide" : "Bien essayé"}</strong><p>{wrongAttempts >= 2 ? scenario.assistedHint : scenario.retryMessage}</p></motion.div>}</AnimatePresence><button className="trade-primary" onClick={validate} disabled={!selected} type="button">Confirmer le diagnostic <ArrowRight size={20} /></button>
         </motion.div> : <motion.div key={`diagnosis-${scenario.id}`} className="trade-drawer-content trade-diagnosis" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}>
-          <span className="trade-status"><i /><strong>Diagnostic confirmé</strong></span><span className="trade-drawer-step">Risque {scenario.index}</span><h2>{scenario.diagnosis}</h2><p>{scenario.description}</p>
+          <button className="trade-drawer-back" onClick={onBackToRoom} type="button"><ArrowLeft size={18} /> Retour à la chaufferie</button><span className="trade-status"><i /><strong>Diagnostic confirmé</strong></span><span className="trade-drawer-step">Risque {scenario.index}</span><h2>{scenario.diagnosis}</h2><p>{scenario.description}</p>
           <div className="trade-consequences">{scenario.consequences.map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
-          <div className="trade-solution-preview"><img src={scenario.equipmentImage} alt={scenario.equipment} style={{ objectPosition: scenario.imagePosition }} /><div><span>Action corrective AQUAPROX</span><strong>{scenario.equipment}</strong><p>{scenario.solution}</p></div></div>
+          <div className="trade-solution-preview"><img src={scenario.equipmentImage} alt={scenario.equipment} style={{ objectPosition: scenario.imagePosition }} /><div><span>Réponse AQUAPROX</span><strong>{scenario.equipment}</strong><p>{scenario.benefit}</p></div></div>
           <button className="trade-primary" onClick={onSolution} type="button">Faire apparaître la solution <ArrowRight size={20} /></button>
         </motion.div>}
       </AnimatePresence>
@@ -154,7 +155,7 @@ function QuestionDrawer({ scenario, mode, onDiagnosis, onSolution }: { scenario:
   );
 }
 
-function BoilerRoomScene({ scene, active, solved, onBack, onHotspot, onDiagnosis, onSolution }: { scene: Scene; active: BoilerRoomScenario; solved: Set<string>; onBack: () => void; onHotspot: (scenario: BoilerRoomScenario) => void; onDiagnosis: () => void; onSolution: () => void }) {
+function BoilerRoomScene({ scene, active, solved, onBack, onCloseScenario, onHotspot, onDiagnosis, onSolution }: { scene: Scene; active: BoilerRoomScenario; solved: Set<string>; onBack: () => void; onCloseScenario: () => void; onHotspot: (scenario: BoilerRoomScenario) => void; onDiagnosis: () => void; onSolution: () => void }) {
   const drawerOpen = scene === "question" || scene === "diagnosis";
   const filterInstalled = solved.has("corrosion-boues");
   return (
@@ -164,7 +165,7 @@ function BoilerRoomScene({ scene, active, solved, onBack, onHotspot, onDiagnosis
         ? <InstalledEquipment key={`installed-${scenario.id}`} scenario={scenario} onSelect={() => onHotspot(scenario)} />
         : <motion.button key={scenario.id} className="trade-risk-hotspot" style={{ left: `${scenario.x}%`, top: `${scenario.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => onHotspot(scenario)} type="button" aria-label={`Inspecter : ${scenario.signalLabel}`}><span className="trade-risk-radar" /><span className="trade-risk-core"><ScenarioIcon id={scenario.id} /></span><strong><small>{scenario.index}</small>{scenario.signalLabel}</strong></motion.button>)}</AnimatePresence>
       {!drawerOpen && <div className="trade-room-instruction"><span>{String(boilerRoomScenarios.length).padStart(2, "0")}</span><div><strong>Diagnostic visuel</strong><p>Repérez un signe, comprenez le risque, révélez la correction</p></div></div>}
-      <AnimatePresence>{drawerOpen && <QuestionDrawer scenario={active} mode={scene === "question" ? "question" : "diagnosis"} onDiagnosis={onDiagnosis} onSolution={onSolution} />}</AnimatePresence>
+      <AnimatePresence>{drawerOpen && <QuestionDrawer scenario={active} mode={scene === "question" ? "question" : "diagnosis"} onBackToRoom={onCloseScenario} onDiagnosis={onDiagnosis} onSolution={onSolution} />}</AnimatePresence>
     </motion.section>
   );
 }
@@ -226,14 +227,12 @@ function CompleteScene({ scenario, count, allSolved, filterInstalled, onExplore,
           <p>{view === "after" ? scenario.solution : scenario.description}</p>
           {view === "after" ? (
             <>
-              <ol className="trade-process-steps">{scenario.processSteps.map((step, index) => <li key={step}><b>0{index + 1}</b><span>{step}</span></li>)}</ol>
               <div className="trade-benefit"><ShieldCheck size={22} /><div><small>Ce que cela améliore</small><strong>{scenario.benefit}</strong></div></div>
-              <div className="trade-technical-facts">{scenario.technicalFacts.map((fact) => <span key={fact}>{fact}</span>)}</div>
-              <div className="trade-proof"><small>{scenario.proofLabel}</small><b>{scenario.proofValue}</b></div>
+              <div className="trade-actions-pair"><div><small>Action curative</small><strong>{scenario.curativeAction}</strong></div><div><small>Protection préventive</small><strong>{scenario.preventiveAction}</strong></div></div>
             </>
           ) : <div className="trade-before-consequences">{scenario.consequences.map((item) => <span key={item}>{item}</span>)}</div>}
           <div className="trade-console-actions">
-            <button className="trade-secondary is-enabled" onClick={onExplore} type="button"><Wrench size={17} /> {allSolved ? "Revoir la chaufferie" : "Continuer la mission"}</button>
+            <button className="trade-secondary is-enabled" onClick={onExplore} type="button"><Wrench size={17} /> {allSolved ? "Revoir la chaufferie" : "Retour à la chaufferie"}</button>
             <button className="trade-primary" onClick={onBack} type="button"><RotateCcw size={18} /> Bâtiment</button>
           </div>
         </div>
@@ -267,7 +266,7 @@ export function TradeShowExperience() {
   return <main className="trade-experience"><AnimatePresence mode="sync" initial={false}>
     {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} completedCount={solved.size} onEnter={() => setScene("buildingFocus")} onVideoComplete={() => setScene("entry")} />}
     {scene === "entry" && <EntryScene key="entry" />}
-    {(scene === "room" || scene === "question" || scene === "diagnosis") && <BoilerRoomScene key="room" scene={scene} active={active} solved={solved} onBack={() => setScene("building")} onHotspot={openScenario} onDiagnosis={() => setScene("diagnosis")} onSolution={showSolution} />}
+    {(scene === "room" || scene === "question" || scene === "diagnosis") && <BoilerRoomScene key="room" scene={scene} active={active} solved={solved} onBack={() => setScene("building")} onCloseScenario={() => setScene("room")} onHotspot={openScenario} onDiagnosis={() => setScene("diagnosis")} onSolution={showSolution} />}
     {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} filterInstalled={solved.has("corrosion-boues")} />}
     {scene === "complete" && <CompleteScene key={`complete-${active.id}`} scenario={active} count={solved.size} allSolved={solved.size === boilerRoomScenarios.length} filterInstalled={solved.has("corrosion-boues")} onExplore={() => setScene("room")} onBack={() => setScene("building")} />}
   </AnimatePresence></main>;
