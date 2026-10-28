@@ -66,6 +66,7 @@
 .trade-zone-label,.trade-room-instruction,.trade-back,.trade-progress,.trade-drawer,.trade-learning-console,.trade-installed-equipment,.trade-compare{border-radius:0 9px 0 9px}
 .trade-zone-core,.trade-risk-core{background:var(--trade-royal)}
 .trade-zone.is-active .trade-zone-core,.trade-progress>span{color:#07152b;background:var(--trade-blue)}
+.trade-zone:disabled:not(.is-focused){opacity:.58}.trade-zone:disabled:not(.is-focused) .trade-zone-pulse{animation:none;opacity:.45}.trade-zone:disabled:not(.is-focused):hover .trade-zone-core{transform:translate(-50%,-50%);box-shadow:none}
 .trade-room-header{top:clamp(22px,2.4vw,42px);display:grid;grid-template-columns:minmax(220px,1fr) auto minmax(220px,1fr);gap:28px}
 .trade-room-header>.trade-progress{justify-self:end}
 .trade-flow-name{min-width:220px;padding:9px 22px;border-left:1px solid rgba(102,198,232,.5);border-right:1px solid rgba(102,198,232,.5);background:rgba(7,21,43,.46);backdrop-filter:blur(12px)}
