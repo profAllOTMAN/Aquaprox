@@ -21,8 +21,16 @@ export type BoilerRoomScenario = {
   benefit: string;
   curativeAction: string;
   preventiveAction: string;
+  correctionSteps: {
+    phase: "curative" | "preventive";
+    title: string;
+    description: string;
+    image: string;
+    actionLabel: string;
+  }[];
   solution: string;
   equipmentImage: string;
+  beforeSceneImage?: string;
   afterSceneImage: string;
   motionVideo: string;
   detailImage?: string;
@@ -43,10 +51,10 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     index: "01",
     shortLabel: "Boues & corrosion",
     signalLabel: "Dépôts ferreux",
-    x: 51,
-    y: 48,
-    solutionX: 52,
-    solutionY: 55,
+    x: 76,
+    y: 58,
+    solutionX: 76,
+    solutionY: 63,
     question: "Que révèle ce dépôt ?",
     prompt: "Identifiez la matière captée sur les barreaux du filtre.",
     answers: ["Calcaire", "Particules ferreuses", "Sable", "Condensation"],
@@ -61,9 +69,13 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     benefit: "Des performances durables et moins d’interventions correctives",
     curativeAction: "Désembouage du réseau pour retirer les dépôts existants",
     preventiveAction: "Filtration magnétique inox et traitement filmogène à base de tanins",
+    correctionSteps: [
+      { phase: "curative", title: "Retirer les boues présentes", description: "Le désembouage évacue les dépôts déjà accumulés pour rétablir la circulation et préparer le réseau.", image: "/assets/tradeshow/equipment/magnetic-bars.jpg", actionLabel: "Lancer le désembouage" },
+      { phase: "preventive", title: "Bloquer leur retour", description: "Le filtre magnétique capte les particules ferreuses. Le traitement filmogène protège ensuite durablement les métaux.", image: "/assets/tradeshow/equipment/technical/magnetic-filter.png", actionLabel: "Installer la protection" },
+    ],
     solution: "Après le désembouage, le filtre retient les particules ferreuses. Le traitement filmogène complète la protection pour limiter le retour de la corrosion.",
     equipmentImage: "/assets/tradeshow/equipment/technical/magnetic-filter.png",
-    afterSceneImage: "/assets/tradeshow/scenes-v2/corrosion-boues-after.png",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/corrosion-boues-after.png",
     motionVideo: "/assets/tradeshow/motion/magnetic-filter.mp4",
     detailImage: "/assets/tradeshow/equipment/magnetic-bars.jpg",
     imagePosition: "center",
@@ -75,12 +87,12 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
   {
     id: "air-degazage",
     index: "02",
-    shortLabel: "Air & pression",
+    shortLabel: "Pression réseau",
     signalLabel: "Pression anormale",
-    x: 46.2,
-    y: 38.5,
-    solutionX: 64,
-    solutionY: 61,
+    x: 88,
+    y: 29,
+    solutionX: 77,
+    solutionY: 63,
     question: "Que remarquez-vous ?",
     prompt: "Observez le purgeur au-dessus du ballon : gouttelettes, légère vapeur et traces au plafond signalent une anomalie.",
     answers: ["Pression normale", "Pression trop basse", "Température élevée", "Présence de tartre"],
@@ -95,12 +107,17 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     benefit: "Une pression stable et un réseau de chauffage fiable",
     curativeAction: "Contrôle du purgeur et remise à niveau de la pression",
     preventiveAction: "Installation d’un groupe de maintien de pression adapté",
+    correctionSteps: [
+      { phase: "curative", title: "Supprimer la perte", description: "Le purgeur et les points de fuite sont contrôlés, puis la pression correcte du réseau est rétablie.", image: "/assets/tradeshow/scenes-v3/pression-anormale-before.png", actionLabel: "Rétablir la pression" },
+      { phase: "preventive", title: "Stabiliser le réseau", description: "Le groupe de maintien de pression absorbe les variations de volume et évite les appoints d’eau répétés.", image: "/assets/tradeshow/equipment/technical/pressure-maintenance-group.png", actionLabel: "Installer le groupe" },
+    ],
     solution: "Le groupe de maintien de pression absorbe les variations de volume et maintient automatiquement le réseau dans sa plage de fonctionnement.",
-    equipmentImage: "/assets/tradeshow/chaufferie-network.jpg",
-    afterSceneImage: "/assets/tradeshow/scenes-v2/pression-after.png",
+    equipmentImage: "/assets/tradeshow/equipment/technical/pressure-maintenance-group.png",
+    beforeSceneImage: "/assets/tradeshow/scenes-v3/pression-anormale-before.png",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/pression-after-v2.png",
     motionVideo: "",
-    detailImage: "/assets/tradeshow/chaufferie-before.jpg",
-    imagePosition: "86% 26%",
+    detailImage: "/assets/tradeshow/scenes-v3/pression-anormale-before.png",
+    imagePosition: "92% 20%",
     proofLabel: "Valeur pour l’exploitant",
     proofValue: "Stabilité et continuité de service",
     processSteps: ["Contrôler la fuite", "Rétablir la pression", "Maintenir automatiquement"],
@@ -111,10 +128,10 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     index: "03",
     shortLabel: "Tartre",
     signalLabel: "Dépôt calcaire",
-    x: 78,
-    y: 57,
-    solutionX: 15,
-    solutionY: 58,
+    x: 23,
+    y: 55,
+    solutionX: 9,
+    solutionY: 62,
     question: "Quel désordre observez-vous ?",
     prompt: "Observez la manchette test démontable et l’intérieur de la canalisation : quel dépôt réduit le passage de l’eau ?",
     answers: ["Corrosion", "Dépôt calcaire", "Présence d’air", "Pression excessive"],
@@ -129,12 +146,16 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     benefit: "Un meilleur échange thermique et une consommation maîtrisée",
     curativeAction: "Détartrage des surfaces et équipements déjà touchés",
     preventiveAction: "Installation ou remplacement de l’adoucisseur",
+    correctionSteps: [
+      { phase: "curative", title: "Enlever le calcaire existant", description: "Le détartrage nettoie d’abord l’échangeur à plaques et les surfaces déjà recouvertes afin de restaurer le transfert de chaleur.", image: "/assets/tradeshow/equipment/client-reference/manchette-test-entartrage.png", actionLabel: "Détartrer l’installation" },
+      { phase: "preventive", title: "Traiter l’eau en amont", description: "L’adoucisseur réduit ensuite la dureté de l’eau avant le préparateur ECS pour limiter la formation de nouveaux dépôts.", image: "/assets/tradeshow/equipment/technical/water-softener-hero.png", actionLabel: "Installer l’adoucisseur" },
+    ],
     solution: "Le détartrage restaure l’échange thermique. Installé en amont, l’adoucisseur réduit la dureté de l’eau et limite la formation de nouveaux dépôts dans les canalisations et le préparateur ECS.",
-    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener.jpg",
-    afterSceneImage: "/assets/tradeshow/scenes-v2/entartrage-after.png",
+    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener-hero.png",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/entartrage-after.png",
     motionVideo: "/assets/tradeshow/motion/water-softener.mp4",
     detailImage: "/assets/tradeshow/equipment/client-reference/manchette-test-entartrage.png",
-    imagePosition: "center",
+    imagePosition: "30% center",
     diagnosticMethod: "Une manchette test démontable permet d’observer directement l’entartrage et d’évaluer l’intérêt d’un traitement adapté.",
     protectedEquipmentImage: "/assets/tradeshow/equipment/client-reference/preparateur-ecs-1500l.png",
     protectedEquipmentTitle: "Préparateur ECS · échangeur à plaques + ballon 1 500 L",
@@ -149,10 +170,10 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     index: "04",
     shortLabel: "Qualité d’eau",
     signalLabel: "Coupons corrodés",
-    x: 66,
-    y: 31,
-    solutionX: 11,
-    solutionY: 60,
+    x: 31,
+    y: 48,
+    solutionX: 29,
+    solutionY: 62,
     question: "Que révèlent ces coupons ?",
     prompt: "Observez les témoins métalliques : leur surface rend visible l’action de la corrosion dans le réseau.",
     answers: ["Une protection chimique insuffisante", "Un excès de pression", "Un défaut d’isolation", "Une ventilation insuffisante"],
@@ -167,9 +188,13 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     benefit: "Des surfaces protégées et une corrosion suivie dans le temps",
     curativeAction: "Contrôle des coupons et correction de la qualité d’eau",
     preventiveAction: "Traitement filmogène suivi, injecté par le poste de dosage",
+    correctionSteps: [
+      { phase: "curative", title: "Mesurer puis corriger", description: "Les coupons métalliques rendent la corrosion observable. L’analyse de l’eau permet d’ajuster le traitement au besoin réel du réseau.", image: "/assets/tradeshow/equipment/technical/eco-protect-filter.png", actionLabel: "Valider le contrôle" },
+      { phase: "preventive", title: "Former un film protecteur", description: "ECO²Protect L protège les surfaces internes ; le poste de dosage assure une injection régulière et suivie.", image: "/assets/tradeshow/equipment/dosing-station.jpg", actionLabel: "Activer la protection" },
+    ],
     solution: "Le traitement filmogène forme une barrière protectrice sur les surfaces internes. Les coupons rendent son efficacité observable ; le poste de dosage reste le moyen d’injection, pas le cœur du message.",
     equipmentImage: "/assets/tradeshow/equipment/dosing-station.jpg",
-    afterSceneImage: "/assets/tradeshow/scenes-v2/conditionnement-after.png",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/conditionnement-after.png",
     motionVideo: "/assets/tradeshow/motion/dosing-station.mp4",
     detailImage: "/assets/tradeshow/equipment/technical/eco-protect-filter.png",
     imagePosition: "center 35%",

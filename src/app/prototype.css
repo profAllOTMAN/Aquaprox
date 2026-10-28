@@ -108,3 +108,49 @@
 @media(max-width:1100px){.trade-room-header{grid-template-columns:auto 1fr auto;gap:12px}.trade-progress{min-width:0}.trade-drawer{width:51vw;min-width:500px}.trade-actions-pair{grid-template-columns:1fr}}
 @media(max-height:820px){.trade-drawer{top:88px}.trade-drawer-content{padding-top:18px}.trade-evidence{height:105px;margin-bottom:12px}.trade-drawer-back{margin-bottom:10px}.trade-flow-rail{margin-bottom:9px}.trade-drawer h2{font-size:30px}.trade-answers button{min-height:47px}.trade-primary{min-height:50px}.trade-solution-preview{margin:12px 0}.trade-diagnosis .trade-consequences{margin:12px 0}.trade-diagnosis .trade-consequences>div{min-height:43px}}
 @media(max-width:760px){.trade-brand{top:18px;left:18px;padding:8px 10px}.trade-brand img{width:142px}.trade-scene-title{display:block;left:20px;right:20px;bottom:92px;max-width:none}.trade-scene-title h1{font-size:30px}.trade-scene-title p{display:none}.trade-room-header{grid-template-columns:auto 1fr}.trade-flow-name{display:block;min-width:0}.trade-room-header>.trade-progress{display:none}.trade-drawer{top:76px;left:8px;right:8px;bottom:8px;width:auto;min-width:0;height:auto}.trade-drawer-content{padding:18px}.trade-evidence{height:120px}.trade-actions-pair{grid-template-columns:1fr}.trade-room-instruction{min-width:0}.trade-risk-hotspot{width:86px;height:86px}.trade-risk-radar{width:80px;height:80px}.trade-risk-core{width:50px;height:50px}}
+
+/* Two-stage intervention: curative treatment, then preventive protection. */
+.trade-correction .trade-room-state-image{filter:saturate(.62) brightness(.5)}
+.trade-correction-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,16,34,.78),rgba(4,16,34,.18) 47%,rgba(4,16,34,.8)),linear-gradient(180deg,rgba(4,16,34,.36),transparent 45%,rgba(4,16,34,.62))}
+.trade-correction-back{position:absolute;z-index:12;top:clamp(108px,12vh,138px);left:clamp(28px,4vw,68px);display:flex;align-items:center;gap:9px;min-height:44px;padding:0 15px;border:1px solid rgba(102,198,232,.36);border-radius:0 7px 0 7px;color:#e9f9fd;background:rgba(7,27,51,.82);backdrop-filter:blur(12px);font:700 12px var(--font-lato);cursor:pointer}
+.trade-correction-progress{position:absolute;z-index:10;top:clamp(30px,3.3vw,54px);left:50%;display:flex;align-items:center;gap:36px;transform:translateX(-50%)}
+.trade-correction-progress:before{content:"";position:absolute;z-index:-1;left:28px;right:28px;top:17px;height:1px;background:#31566e}
+.trade-correction-progress>span{display:flex;align-items:center;gap:10px;color:#789cac;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.trade-correction-progress i{display:grid;place-items:center;width:34px;height:34px;border:1px solid #31566e;border-radius:50%;color:#789cac;background:#071b31;font:700 10px var(--font-mono)}
+.trade-correction-progress .is-active{color:#dff8fe}.trade-correction-progress .is-active i{border-color:var(--trade-blue);color:#07152b;background:var(--trade-blue);box-shadow:0 0 24px rgba(102,198,232,.25)}
+.trade-correction-card{position:absolute;z-index:8;top:50%;left:50%;display:grid;grid-template-columns:minmax(300px,44%) 1fr;width:min(1040px,82vw);min-height:min(580px,67vh);overflow:hidden;transform:translate(-50%,-46%);border:1px solid rgba(102,198,232,.46);border-radius:0 14px 0 14px;background:linear-gradient(145deg,rgba(10,42,70,.985),rgba(5,20,42,.99));box-shadow:0 34px 110px rgba(0,5,15,.64)}
+.trade-correction-visual{position:relative;min-height:100%;overflow:hidden;background:#061526}.trade-correction-visual img{width:100%;height:100%;object-fit:cover;filter:contrast(1.06) saturate(.9)}
+.trade-correction-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(3,15,31,.88))}
+.trade-correction-visual>span{position:absolute;z-index:2;left:24px;bottom:24px;padding:10px 12px;border-left:3px solid var(--trade-blue);color:#e9faff;background:rgba(4,20,39,.8);font-size:10px;font-weight:750;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(10px)}
+.trade-correction-visual>i{position:absolute;z-index:2;inset:12px;border:1px solid rgba(102,198,232,.24);pointer-events:none}
+.trade-correction-copy{display:flex;flex-direction:column;padding:clamp(34px,4vw,64px)}
+.trade-correction-copy>small{color:var(--trade-blue);font-size:10px;font-weight:750;letter-spacing:.16em;text-transform:uppercase}
+.trade-correction-copy h2{margin:18px 0 18px;max-width:480px;color:#f5fcfe;font-size:clamp(34px,3.2vw,58px);font-weight:700;line-height:.98;letter-spacing:-.04em}
+.trade-correction-copy>p{max-width:520px;margin:0;color:#bad0d9;font-size:clamp(15px,1vw,18px);line-height:1.6}
+.trade-correction-result{display:flex;align-items:center;gap:13px;margin:28px 0;padding:15px;border:1px solid rgba(102,198,232,.3);background:rgba(102,198,232,.07)}.trade-correction-result svg{flex:0 0 auto;color:var(--trade-blue)}.trade-correction-result span,.trade-correction-result strong{display:block}.trade-correction-result span{color:#78acbe;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.trade-correction-result strong{margin-top:5px;color:#edfafd;font-size:14px}
+.trade-correction-copy .trade-primary{margin-top:auto}
+.trade-correction-note{position:absolute;z-index:8;left:50%;bottom:24px;transform:translateX(-50%);color:#8aaab8;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+@media(max-width:900px){.trade-correction-card{grid-template-columns:38% 1fr;width:92vw}.trade-correction-copy{padding:28px}.trade-correction-progress{gap:14px}.trade-correction-progress b{display:none}}
+@media(max-width:650px){.trade-correction-back{top:82px;left:16px}.trade-correction-card{top:54%;grid-template-columns:1fr;grid-template-rows:34% 1fr;height:75vh}.trade-correction-copy h2{font-size:30px;margin:12px 0}.trade-correction-result{margin:16px 0}.trade-correction-note{display:none}}
+
+/* Clear visual diagnosis: evidence on the left, question and choices on the right. */
+.trade-drawer.is-question{width:min(68vw,1160px);min-width:820px}
+.trade-drawer.is-question .trade-drawer-content{overflow:hidden}
+.trade-question-shell{display:grid;grid-template-columns:minmax(320px,46%) minmax(340px,1fr);gap:clamp(24px,2.6vw,44px);min-height:0;flex:1}
+.trade-question-shell .trade-evidence{height:auto;min-height:0;margin:0;border-color:rgba(102,198,232,.5);box-shadow:inset 0 0 0 1px rgba(102,198,232,.08),0 22px 55px rgba(0,0,0,.28)}
+.trade-question-shell .trade-evidence img{object-fit:cover;filter:contrast(1.09) saturate(1.02) brightness(1.03)}
+.trade-question-shell .trade-evidence:after{background:linear-gradient(180deg,transparent 58%,rgba(4,17,35,.9))}
+.trade-question-shell .trade-evidence figcaption{left:22px;bottom:20px}.trade-question-shell .trade-evidence strong{font-size:21px}
+.trade-question-main{display:flex;min-height:0;flex-direction:column;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:var(--trade-blue-dark) transparent}
+.trade-question-main>p{margin:0;color:#bcd3dc;font-size:clamp(15px,.92vw,18px);line-height:1.5}
+.trade-question-main .trade-primary{margin-top:auto;flex:0 0 auto}
+
+/* AquaProx blue + markers replace the previous yellow equipment icons. */
+.trade-risk-radar{border-color:rgba(102,198,232,.88);background:rgba(102,198,232,.1);box-shadow:0 0 36px rgba(38,128,191,.34)}
+.trade-risk-core{color:#f4fcff;background:linear-gradient(145deg,var(--trade-blue-dark),var(--trade-royal));border-color:#dff8ff;box-shadow:0 9px 30px rgba(4,20,43,.46),0 0 24px rgba(102,198,232,.25)}
+.trade-risk-hotspot:hover .trade-risk-core,.trade-risk-hotspot:focus-visible .trade-risk-core{background:linear-gradient(145deg,#55bce2,#2c3f89);box-shadow:0 0 38px rgba(102,198,232,.62)}
+.trade-risk-hotspot>strong small{color:#c8f3ff;background:#163d65}
+
+@media(max-width:1200px){.trade-drawer.is-question{width:76vw;min-width:720px}.trade-question-shell{grid-template-columns:42% 1fr;gap:22px}}
+@media(max-height:760px){.trade-drawer.is-question .trade-evidence{height:auto;margin:0}.trade-question-main .trade-answers{margin-top:10px}.trade-question-main .trade-answers button{min-height:43px}.trade-question-main h2{margin-bottom:9px}}
+@media(max-width:760px){.trade-drawer.is-question{width:auto;min-width:0}.trade-drawer.is-question .trade-drawer-content{overflow-y:auto}.trade-question-shell{display:flex;flex-direction:column}.trade-question-shell .trade-evidence{height:190px;min-height:190px}.trade-question-main{overflow:visible}.trade-question-main .trade-primary{margin-top:18px}}
