@@ -23,7 +23,7 @@ const ZONE_META: Record<ZoneId, { label: string; flowLabel: string; video: strin
   gaines: { label: "Gaines techniques", flowLabel: "Distribution verticale", video: "/assets/tradeshow/motion/building-to-gaines.mp4" },
   toiture: { label: "Toiture", flowLabel: "Production en toiture", video: "/assets/tradeshow/motion/building-to-toiture.mp4" },
 };
-const ENABLED_ZONES = new Set<ZoneId>(["chaufferie", "logements"]);
+const ENABLED_ZONES = new Set<ZoneId>(["chaufferie", "logements", "gaines"]);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const BOILER_ROOM_BEFORE = "/assets/tradeshow/scenes-v3/chaufferie-organized-before.png";
