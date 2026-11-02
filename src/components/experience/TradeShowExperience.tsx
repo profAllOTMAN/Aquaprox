@@ -1,15 +1,18 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, Droplets, FlaskConical, Gauge, Plus, RotateCcw, ShieldCheck, Wrench } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, Droplets, FlaskConical, Gauge, Plus, RotateCcw, ShieldCheck, Snowflake, Wrench } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
 import { buildingZoneScenarios, type BuildingZoneId } from "@/data/buildingZoneScenarios";
+import { BoilerRoomGame } from "./BoilerRoomGame";
+import { BOILER_ROOM_SCENE } from "@/data/boilerRoomScene";
+import { ROOF_SCENE } from "@/data/roofScene";
 
 type Scene = "building" | "buildingFocus" | "buildingZoom" | "entry" | "room" | "question" | "diagnosis" | "correction" | "reveal" | "complete";
 
 export const BUILDING_ZONES = [
-  { id: "logements", label: "Logements", x: 64, y: 29 },
+  { id: "logements", label: "Logements", x: 48, y: 56 },
   { id: "gaines", label: "Gaines techniques", x: 51, y: 39 },
   { id: "toiture", label: "Toiture", x: 49, y: 15 },
   { id: "chaufferie", label: "Chaufferie", x: 54, y: 82 },
@@ -21,7 +24,7 @@ const ZONE_META: Record<ZoneId, { label: string; flowLabel: string; video: strin
   chaufferie: { label: "Chaufferie", flowLabel: "Chauffage collectif", video: "/assets/tradeshow/motion/building-to-chaufferie.mp4" },
   logements: { label: "Logement", flowLabel: "Confort du logement", video: "/assets/tradeshow/motion/building-to-logement.mp4" },
   gaines: { label: "Gaines techniques", flowLabel: "Distribution verticale", video: "/assets/tradeshow/motion/building-to-gaines.mp4" },
-  toiture: { label: "Toiture", flowLabel: "Production en toiture", video: "/assets/tradeshow/motion/building-to-toiture.mp4" },
+  toiture: { label: "Toiture", flowLabel: "Production en toiture", video: ROOF_SCENE.transitionVideo },
 };
 const ENABLED_ZONES = new Set<ZoneId>(["chaufferie", "logements", "gaines", "toiture"]);
 
@@ -87,13 +90,14 @@ function ZoneMarker({ zone, completedCount, focused, onSelect, onHover }: { zone
   const complete = completedCount > 0;
   return (
     <motion.button className={`trade-zone ${enabled ? "is-active" : ""} ${complete ? "is-complete" : ""} ${focused ? "is-focused" : ""}`} style={{ left: `${zone.x}%`, top: `${zone.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .32, ease }} onClick={onSelect} onPointerEnter={() => enabled && onHover(true)} onPointerLeave={() => enabled && onHover(false)} onFocus={() => enabled && onHover(true)} onBlur={() => enabled && onHover(false)} disabled={focused || !enabled} type="button" aria-label={enabled ? (complete ? `${zone.label}, ${completedCount} risques identifiés` : zone.label) : `${zone.label}, bientôt disponible`}>
-      <span className="trade-zone-pulse" /><span className="trade-zone-core">{focused || complete ? <Check size={17} strokeWidth={3} /> : "+"}</span><span className="trade-zone-label">{focused ? `Accès ${zone.label}` : complete ? `✓ ${zone.label}` : zone.label}</span>
+      <span className="trade-zone-pulse" /><span className="trade-zone-core">{focused || complete ? <Check size={17} strokeWidth={3} /> : "+"}</span>
     </motion.button>
   );
 }
 
 function BuildingScene({ scene, selectedZone, completedByZone, onEnter, onVideoComplete }: { scene: Scene; selectedZone: ZoneId; completedByZone: Record<ZoneId, number>; onEnter: (zone: ZoneId) => void; onVideoComplete: () => void }) {
   const [hovered, setHovered] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const selecting = scene !== "building";
   const holdOpeningFrame = useCallback(() => {
@@ -101,6 +105,7 @@ function BuildingScene({ scene, selectedZone, completedByZone, onEnter, onVideoC
     if (!video) return;
     video.pause();
     video.currentTime = 0;
+    setVideoReady(false);
   }, []);
   useEffect(() => {
     const video = videoRef.current;
@@ -108,18 +113,28 @@ function BuildingScene({ scene, selectedZone, completedByZone, onEnter, onVideoC
     if (scene === "buildingZoom") {
       video.currentTime = 0;
       video.play().catch(onVideoComplete);
-      return;
+      if (selectedZone !== "chaufferie") return;
+      let frame = 0;
+      const stopAtRoom = () => {
+        if (video.currentTime >= BOILER_ROOM_SCENE.videoStopTime) {
+          video.pause();
+          onVideoComplete();
+          return;
+        }
+        frame = window.requestAnimationFrame(stopAtRoom);
+      };
+      frame = window.requestAnimationFrame(stopAtRoom);
+      return () => window.cancelAnimationFrame(frame);
     }
     holdOpeningFrame();
-  }, [holdOpeningFrame, onVideoComplete, scene]);
+  }, [holdOpeningFrame, onVideoComplete, scene, selectedZone]);
   const visibleZones = scene === "buildingFocus" ? BUILDING_ZONES.filter((zone) => zone.id === selectedZone) : BUILDING_ZONES;
   const completedCount = Object.values(completedByZone).reduce((total, value) => total + value, 0);
   return (
     <motion.section className={`trade-scene trade-building ${selecting ? "is-selecting" : ""} ${scene === "buildingZoom" ? "is-zooming" : ""}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
       <motion.div className="trade-media-wrap" animate={{ scale: 1, x: 0, y: 0 }}>
-        {scene === "buildingZoom"
-          ? <video ref={videoRef} className="trade-media" poster="/assets/tradeshow/building-overview-v2.png" muted playsInline preload="auto" onEnded={onVideoComplete} onError={onVideoComplete}><source src={ZONE_META[selectedZone].video} type="video/mp4" /></video>
-          : <img className="trade-media trade-building-overview" src="/assets/tradeshow/building-overview-v2.png" alt="Immeuble collectif en coupe avec logements, gaines techniques, chaufferie et équipements de toiture visibles" />}
+        <img className="trade-media trade-building-overview" src="/assets/tradeshow/building-overview-v2.png" alt="Immeuble collectif en coupe avec logements, gaines techniques, chaufferie et équipements de toiture visibles" />
+        <video ref={videoRef} className="trade-media" src={ZONE_META[selectedZone].video} style={{ opacity: scene === "buildingZoom" && videoReady ? 1 : 0, transition: "opacity .3s ease" }} muted playsInline preload="auto" onPlaying={() => setVideoReady(true)} onEnded={onVideoComplete} onError={() => { if (scene === "buildingZoom") onVideoComplete(); }} aria-hidden="true" />
       </motion.div>
       <div className="trade-vignette" /><motion.div className="trade-basement-focus" animate={{ opacity: hovered || selecting ? 1 : 0 }} transition={{ duration: .38, ease }} /><Brand />
       <div className="trade-scene-title"><span>{completedCount ? "Diagnostic en cours" : "Mission AQUAPROX"}</span><h1>{completedCount ? "Poursuivez le diagnostic du bâtiment" : "Saurez-vous repérer les risques cachés dans ce bâtiment ?"}</h1><p>Explorez les zones techniques et révélez les solutions adaptées.</p></div>
@@ -172,10 +187,11 @@ function QuestionDrawer({ scenario, mode, onBackToRoom, onDiagnosis, onSolution,
           </div>
         </motion.div> : <motion.div key={`diagnosis-${scenario.id}`} className="trade-drawer-content trade-diagnosis" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }}>
           <button className="trade-drawer-back" onClick={onBackToRoom} type="button"><ArrowLeft size={18} /> {backLabel}</button><span className="trade-status"><i /><strong>Diagnostic confirmé</strong></span><span className="trade-drawer-step">Risque {scenario.index}</span><h2>{scenario.diagnosis}</h2><p>{scenario.description}</p>
+          {scenario.diagnosticImage && <figure className="trade-diagnostic-visual"><img src={scenario.diagnosticImage} alt={`Diagnostic : ${scenario.diagnosis}`} /><figcaption>{scenario.diagnosis}</figcaption></figure>}
           {scenario.diagnosticMethod && <div className="trade-diagnostic-method"><Gauge size={20} /><div><small>Méthode de diagnostic</small><strong>{scenario.diagnosticMethod}</strong></div></div>}
           <div className="trade-consequences">{scenario.consequences.map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
           <ProtectedEquipmentCard scenario={scenario} compact />
-          <div className="trade-solution-preview"><img src={scenario.equipmentImage} alt={scenario.equipment} style={{ objectPosition: scenario.imagePosition }} /><div><span>Réponse AQUAPROX</span><strong>{scenario.equipment}</strong><p>{scenario.benefit}</p></div></div>
+          <div className="trade-solution-preview"><img src={scenario.equipmentImage} alt={scenario.equipment} style={{ objectPosition: scenario.imagePosition }} /><div><span>Solution adaptée</span><strong>{scenario.equipment}</strong><p>{scenario.benefit}</p></div></div>
           <button className="trade-primary" onClick={onSolution} type="button">Faire apparaître la solution <ArrowRight size={20} /></button>
         </motion.div>}
       </AnimatePresence>
@@ -185,13 +201,13 @@ function QuestionDrawer({ scenario, mode, onBackToRoom, onDiagnosis, onSolution,
 
 function DiagnosticRoomScene({ scene, active, scenarios, solved, zone, onBack, onCloseScenario, onHotspot, onDiagnosis, onSolution }: { scene: Scene; active: BoilerRoomScenario; scenarios: BoilerRoomScenario[]; solved: Set<string>; zone: ZoneId; onBack: () => void; onCloseScenario: () => void; onHotspot: (scenario: BoilerRoomScenario) => void; onDiagnosis: () => void; onSolution: () => void }) {
   const drawerOpen = scene === "question" || scene === "diagnosis";
-  const roomStateImage = solved.has(active.id) ? active.afterSceneImage : (active.beforeSceneImage ?? BOILER_ROOM_BEFORE);
+  const roomStateImage = solved.size === scenarios.length ? active.afterSceneImage : (active.beforeSceneImage ?? BOILER_ROOM_BEFORE);
   return (
     <motion.section className="trade-scene trade-room" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .48 }}>
       <AnimatePresence initial={false}><motion.img key={roomStateImage} className="trade-media trade-room-state-image" src={roomStateImage} alt={solved.has(active.id) ? `${ZONE_META[zone].label} après correction : ${active.equipment}` : `${ZONE_META[zone].label} avant actions correctives`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .65, ease }} /></AnimatePresence><div className={`trade-room-shade ${drawerOpen ? "is-open" : ""}`} /><RoomHeader count={solved.size} total={scenarios.length} flowLabel={ZONE_META[zone].flowLabel} onBack={onBack} />
       <AnimatePresence>{!drawerOpen && scenarios.map((scenario) => solved.has(scenario.id)
         ? <InstalledEquipment key={`installed-${scenario.id}`} scenario={scenario} onSelect={() => onHotspot(scenario)} />
-        : <motion.button key={scenario.id} className="trade-risk-hotspot" style={{ left: `${scenario.x}%`, top: `${scenario.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => onHotspot(scenario)} type="button" aria-label={`Inspecter : ${scenario.signalLabel}`}><span className="trade-risk-radar" /><span className="trade-risk-core"><Plus size={27} strokeWidth={2.4} /></span><strong><small>{scenario.index}</small>{scenario.signalLabel}</strong></motion.button>)}</AnimatePresence>
+        : <motion.button key={scenario.id} className="trade-risk-hotspot" style={{ left: `${scenario.x}%`, top: `${scenario.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => onHotspot(scenario)} type="button" aria-label={`Inspecter : ${scenario.signalLabel}`}><span className="trade-risk-radar" /><span className="trade-risk-core">{scenario.id === "lavabo-legionelle" ? <Snowflake size={25} strokeWidth={2.2} /> : <Plus size={27} strokeWidth={2.4} />}</span><strong><small>{scenario.index}</small>{scenario.signalLabel}</strong></motion.button>)}</AnimatePresence>
       {!drawerOpen && <div className="trade-room-instruction"><span>{String(scenarios.length).padStart(2, "0")}</span><div><strong>Diagnostic visuel</strong><p>Repérez un signe, comprenez le risque, révélez la correction</p></div></div>}
       <AnimatePresence>{drawerOpen && <QuestionDrawer scenario={active} mode={scene === "question" ? "question" : "diagnosis"} onBackToRoom={onCloseScenario} onDiagnosis={onDiagnosis} onSolution={onSolution} backLabel={`Retour à ${ZONE_META[zone].label.toLowerCase()}`} />}</AnimatePresence>
     </motion.section>
@@ -232,7 +248,7 @@ function CorrectionScene({ scenario, onBack, onComplete }: { scenario: BoilerRoo
       </div>
       <AnimatePresence mode="wait">
         <motion.article key={`${scenario.id}-${stepIndex}`} className="trade-correction-card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .42, ease }}>
-          <div className="trade-correction-visual"><img src={step.image} alt={step.title} /><span>{step.phase === "curative" ? "Action 01 · Curatif" : "Action 02 · Préventif"}</span><i /></div>
+          <div className="trade-correction-visual"><img src={step.image} alt={step.title} /><span>{`Action ${String(stepIndex + 1).padStart(2, "0")} · ${step.phase === "curative" ? "Curatif" : "Préventif"}`}</span><i /></div>
           <div className="trade-correction-copy">
             <small>{scenario.diagnosis}</small>
             <h2>{step.title}</h2>
@@ -312,13 +328,15 @@ export function TradeShowExperience() {
     toiture: buildingZoneScenarios.filter((item) => item.zoneId === "toiture" && solved.has(item.id)).length,
   };
   useEffect(() => {
-    [BOILER_ROOM_BEFORE, ...[...boilerRoomScenarios, ...buildingZoneScenarios].flatMap((scenario) => [scenario.beforeSceneImage, scenario.afterSceneImage].filter(Boolean) as string[])].forEach((source) => {
+    const scenarios = selectedZone === "chaufferie" ? boilerRoomScenarios : buildingZoneScenarios.filter((scenario) => scenario.zoneId === selectedZone);
+    const before = selectedZone === "chaufferie" ? BOILER_ROOM_SCENE.before : scenarios[0]?.beforeSceneImage;
+    [...new Set([before, ...scenarios.flatMap((scenario) => [scenario.beforeSceneImage, scenario.afterSceneImage])].filter(Boolean) as string[])].forEach((source) => {
       const image = new Image();
       image.decoding = "async";
       image.src = source;
       image.decode().catch(() => undefined);
     });
-  }, []);
+  }, [selectedZone]);
   useEffect(() => {
     if (scene !== "buildingFocus" && scene !== "entry" && scene !== "reveal") return;
     const durations: Partial<Record<Scene, number>> = { buildingFocus: 480, entry: 1100, reveal: 3000 };
@@ -336,9 +354,9 @@ export function TradeShowExperience() {
     setScene("buildingFocus");
   };
   return <main className="trade-experience"><AnimatePresence mode="sync" initial={false}>
-    {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} selectedZone={selectedZone} completedByZone={completedByZone} onEnter={enterZone} onVideoComplete={() => setScene("entry")} />}
+    {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} selectedZone={selectedZone} completedByZone={completedByZone} onEnter={enterZone} onVideoComplete={() => setScene("room")} />}
     {scene === "entry" && <EntryScene key="entry" zone={selectedZone} image={currentScenarios[0].beforeSceneImage ?? BOILER_ROOM_BEFORE} />}
-    {(scene === "room" || scene === "question" || scene === "diagnosis") && <DiagnosticRoomScene key={`room-${selectedZone}`} scene={scene} active={active} scenarios={currentScenarios} solved={zoneSolved} zone={selectedZone} onBack={() => setScene("building")} onCloseScenario={() => setScene("room")} onHotspot={openScenario} onDiagnosis={() => setScene("diagnosis")} onSolution={showSolution} />}
+    {scene === "room" && <BoilerRoomGame key={`game-${selectedZone}`} zone={selectedZone} solved={solved} onSolved={(id) => setSolved((current) => new Set(current).add(id))} onBack={() => setScene("building")} />}
     {scene === "correction" && <CorrectionScene key={`correction-${active.id}`} scenario={active} onBack={() => setScene("diagnosis")} onComplete={completeCorrection} />}
     {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} />}
     {scene === "complete" && <CompleteScene key={`complete-${active.id}`} scenario={active} count={zoneSolved.size} total={currentScenarios.length} zone={selectedZone} allSolved={zoneSolved.size === currentScenarios.length} onExplore={() => setScene("room")} onBack={() => setScene("building")} />}

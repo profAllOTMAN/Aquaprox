@@ -155,3 +155,22 @@
 @media(max-width:1200px){.trade-drawer.is-question{width:76vw;min-width:720px}.trade-question-shell{grid-template-columns:42% 1fr;gap:22px}}
 @media(max-height:760px){.trade-drawer.is-question .trade-evidence{height:auto;margin:0}.trade-question-main .trade-answers{margin-top:10px}.trade-question-main .trade-answers button{min-height:43px}.trade-question-main h2{margin-bottom:9px}}
 @media(max-width:760px){.trade-drawer.is-question{width:auto;min-width:0}.trade-drawer.is-question .trade-drawer-content{overflow-y:auto}.trade-question-shell{display:flex;flex-direction:column}.trade-question-shell .trade-evidence{height:190px;min-height:190px}.trade-question-main{overflow:visible}.trade-question-main .trade-primary{margin-top:18px}}
+
+/* November backlog pass: kiosk panels stay complete, wide and scroll-free. */
+.trade-drawer:not(.is-question){width:min(48vw,820px);min-width:620px}
+.trade-drawer-content,.trade-question-main,.trade-console-content{overflow:hidden}
+.trade-diagnostic-visual{position:relative;flex:0 0 clamp(105px,15vh,150px);margin:12px 0 0;overflow:hidden;border:1px solid rgba(102,198,232,.38);border-radius:0 9px 0 9px;background:#071e33}
+.trade-diagnostic-visual img{width:100%;height:100%;object-fit:cover;filter:contrast(1.06) saturate(.95)}
+.trade-diagnostic-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 44%,rgba(4,17,35,.88))}
+.trade-diagnostic-visual figcaption{position:absolute;z-index:1;left:16px;right:16px;bottom:12px;color:#f3fbfe;font-size:12px;font-weight:700;line-height:1.3}
+.trade-diagnosis .trade-drawer-content{padding-top:20px}
+.trade-diagnosis .trade-status{margin-bottom:13px}
+.trade-diagnosis .trade-consequences{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0;border:0;background:transparent}
+.trade-diagnosis .trade-consequences>div{min-height:58px;padding:9px 11px;border:1px solid #294b63;background:#09243c}
+.trade-diagnosis .trade-consequences strong{font-size:12px;line-height:1.25}
+.trade-diagnosis .trade-solution-preview{margin:12px 0}
+.trade-console-content{display:flex;flex-direction:column}
+.trade-console-actions{margin-top:auto}
+@media(max-width:1200px){.trade-drawer:not(.is-question){width:54vw;min-width:540px}.trade-diagnosis .trade-consequences{grid-template-columns:1fr 1fr}}
+@media(max-height:760px){.trade-diagnostic-visual{flex-basis:88px}.trade-diagnostic-visual figcaption{font-size:10px}.trade-diagnosis .trade-consequences>div{min-height:44px}.trade-diagnosis .trade-solution-preview>img{height:84px}.trade-diagnosis .trade-solution-preview{grid-template-columns:105px 1fr}.trade-diagnosis .trade-solution-preview>img{width:105px}}
+@media(max-width:760px){.trade-drawer:not(.is-question){width:auto;min-width:0}.trade-drawer-content,.trade-question-main,.trade-console-content{overflow-y:auto}.trade-diagnosis .trade-consequences{grid-template-columns:1fr}.trade-diagnostic-visual{flex-basis:105px}}
