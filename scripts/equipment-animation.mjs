@@ -13,9 +13,11 @@ export function drawEquipment(ctx, kind, t) {
   function pipe(points,active=true){line(points,'#254863',22);line(points,'#6892aa',2);if(active)flow(points);}
   function tank(x,y,w,h,color='#285ca0') {const g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,'#0c2746');g.addColorStop(.3,color);g.addColorStop(.55,'#8bd7f2');g.addColorStop(1,'#173b66');box(x,y,w,h,g,'#8dbed6',w*.3);}
   function tag(s,x,y,color=blue){box(x-60,y-22,120,42,'#071b2e',color,3);text(s,x,y+6,19,color,'center');}
-  const titles={softener:'Adoucissement de l’eau',filter:'Filtration magnétique',pressure:'Maintien de pression',dosing:'Protection du circuit fermé',radiator:'Désembouage du radiateur',probio:'Désinfection pilotée PROBIO'};
+  const titles={softener:'Adoucissement de l’eau',filter:'Filtration magnétique',pressure:'Maintien de pression',dosing:'Protection du circuit fermé',radiator:'Désembouage du radiateur',probio:'Désinfection pilotée PROBIO',descaling:'Détartrage de la douche','ecs-recovery':'Rétablir la production ECS'};
   const stages={softener:['Eau dure : calcium + magnésium','La résine échange les ions','L’eau adoucie protège la production','Régénération : un cycle distinct'],filter:['L’eau ralentit dans le filtre','Les aimants retiennent le fer','La poche retient les autres boues','Le circuit retrouve une eau filtrée'],pressure:['Les variations de volume sont mesurées','Le régulateur compare la pression','Le groupe corrige la pression','Le circuit reste dans sa plage'],dosing:['La pompe prélève le traitement','Le dosage est ajusté au circuit','Un film protecteur couvre le métal','Le suivi maintient la protection'],radiator:['Observer : haut chaud, bas froid','Désembouer et évacuer les dépôts','Vérifier une chaleur homogène','Filtrer en chaufferie et suivre l’eau'],probio:['Une contamination a été confirmée','Mesure REDOX et injection pilotée','Remettre la production ECS en état','Contrôler puis maintenir le suivi']};
   const stage=Math.floor(t/2)%4;
+  stages.descaling=['Repérer les dépôts existants','Détartrer les surfaces touchées','Rincer et vérifier le résultat','Prévenir ensuite en amont'];
+  stages['ecs-recovery']=['Un défaut ECS a été identifié','Contrôler production et distribution','Corriger la cause du défaut','Vérifier puis maintenir le suivi'];
   text('AQUAPROX  /  COMPRENDRE LA SOLUTION',50,62,17,blue);
   text(titles[kind],50,115,38);
   text('Schéma de principe • illustration pédagogique',50,151,18,muted);
@@ -103,6 +105,42 @@ export function drawEquipment(ctx, kind, t) {
     ctx.setLineDash([6,7]);line([[620,350],[620,432],[355,432],[355,466]],'#afdcf0',2);ctx.setLineDash([]);
     text('Deux pompes d’injection pilotées',480,778,23,blue,'center');
     text('La désinfection ne réchauffe pas l’eau',480,817,20,muted,'center');
+  }
+  if(kind==='descaling') {
+    const clean=stage>=2;
+    box(285,310,390,370,'#16394d','#a9ddec',3);
+    line([[280,300],[675,300],[675,690]],'#badbe8',7);
+    line([[330,690],[650,690]],'#a4b9c4',8);
+    if(!clean)for(let i=0;i<66;i++) {
+      const x=315+(i*53%325),y=345+(i*73%280);
+      ctx.globalAlpha=stage===1?Math.max(0,1-(t-2)/2):.85;
+      dot(x,y,3+(i%4),'#ecede2');
+    }
+    ctx.globalAlpha=1;
+    if(stage===1||stage===2)for(let i=0;i<11;i++) {
+      const y=330+((t*.3+i/11)%1)*325;
+      line([[330+i*29,y],[330+i*29,y+20]],'#8fdbec',3);
+    }
+    text(clean?'Surface rincée et contrôlée':'Dépôt minéral sur le verre',480,270,25,white,'center');
+    text('Le détartrage retire les dépôts existants',480,735,23,blue,'center');
+    text('L’adoucisseur prévient les nouveaux dépôts',480,781,21,muted,'center');
+  }
+  if(kind==='ecs-recovery') {
+    const restored=stage>=2;
+    tank(295,325,210,350,'#ce8b53');
+    box(333,278,135,48,'#0c263e','#87bfd6',3);
+    text(restored?'Contrôlé':'À contrôler',400,309,18,restored?blue:'#f4c798','center');
+    pipe([[90,620],[295,620]]);pipe([[505,365],[825,365],[825,565]]);
+    line([[825,565],[875,565]],'#a9d9e9',8);
+    line([[825,582],[825,640]],restored?'#f1b47e':'#7ed7ec',5);
+    flow([[505,365],[825,365],[825,565]],0,restored?'#f1b47e':'#7ed7ec');
+    line([[505,625],[705,625],[705,720],[400,720],[400,675]],'#557c96',7);
+    if(restored)flow([[505,625],[705,625],[705,720],[400,720],[400,675]]);
+    line([[315,460],[350,460],[350,420],[455,420],[455,480],[350,480],[350,540],[455,540],[455,600],[315,600]],restored?'#efac76':'#6e879b',7);
+    text('Échangeur + ballon ECS',400,260,24,white,'center');
+    text('Distribution',790,315,21,muted,'center');
+    text('Retour de boucle',605,759,20,muted,'center');
+    text('Remise en état distincte de la désinfection',480,802,21,blue,'center');
   }
   // Enough room below the diagram for the application caption overlay.
   box(50,832,860,70,'#071c31','#436d88',3);text(stages[kind][stage],480,876,26,white,'center');

@@ -1,5 +1,15 @@
 import { BOILER_ROOM_REGIONS, BOILER_ROOM_SCENE } from "./boilerRoomScene";
 
+export type ScenarioStepMedia = {
+  kind: "observation" | "equipment";
+  image: string;
+  label: string;
+  location: string;
+  productVideo?: string;
+  motionVideo: string;
+  motionPoster?: string;
+};
+
 export type BoilerRoomScenario = {
   id: string;
   index: string;
@@ -29,6 +39,7 @@ export type BoilerRoomScenario = {
     description: string;
     image: string;
     actionLabel: string;
+    media?: ScenarioStepMedia;
   }[];
   solution: string;
   equipmentImage: string;
@@ -42,6 +53,7 @@ export type BoilerRoomScenario = {
   detailImage?: string;
   resultImage?: string;
   diagnosticImage?: string;
+  observationVideo?: string;
   imagePosition?: string;
   diagnosticMethod?: string;
   protectedEquipmentImage?: string;
@@ -165,10 +177,10 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     solution: "Après détartrage, la résine échange les ions calcium et magnésium contre des ions sodium. L’eau adoucie limite les nouveaux dépôts en amont de l’ECS. Le sel régénère la résine lors d’un cycle distinct ; l’adoucisseur ne retire pas le tartre déjà formé.",
     equipmentImage: "/assets/tradeshow/equipment/technical/water-softener.jpg",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
-    afterSceneImage: "/assets/tradeshow/scenes-v3/entartrage-after.png",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/entartrage-simplex-after-v4.png",
     motionVideo: "/assets/tradeshow/motion/explainers/softener.mp4",
     motionPoster: "/assets/tradeshow/motion/explainers/softener.jpg",
-    productVideo: "/assets/tradeshow/motion/water-softener.mp4",
+    productVideo: "/assets/tradeshow/motion/water-softener-product-loop-v2.mp4",
     detailImage: "/assets/tradeshow/equipment/client-reference/manchette-test-entartrage.png",
     imagePosition: "30% center",
     diagnosticMethod: "Une manchette test démontable permet d’observer directement l’entartrage et d’évaluer l’intérêt d’un traitement adapté.",
@@ -210,8 +222,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     equipmentImage: "/assets/tradeshow/equipment/technical/film-dosing-station-v2.png",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
     afterSceneImage: "/assets/tradeshow/scenes-v3/conditionnement-after.png",
-    motionVideo: "/assets/tradeshow/motion/explainers/dosing.mp4",
-    motionPoster: "/assets/tradeshow/motion/explainers/dosing.jpg",
+    motionVideo: "/assets/tradeshow/motion/dosing-station.mp4",
+    motionPoster: "/assets/tradeshow/equipment/technical/dosing-animation-poster.jpg",
     detailImage: "/assets/tradeshow/equipment/technical/corrosion-witness-v2.png",
     imagePosition: "center 35%",
     proofLabel: "Bénéfice réseau",

@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-03",
+  "credits": 39,
+  "cap": 300,
+  "images": [
+    {
+      "id": "eeed724e-3ce4-4b73-b732-2c12d776036d",
+      "cost": 2,
+      "prompt": "Edit the first reference boiler-room image. Keep its EXACT camera framing, two large grey boiler boxes, existing large blue cylinder, stainless right tank, all pipework, concrete walls, floor, lighting and materials. Add ONE realistic physical PROBIO chlorination assembly in the free area at 23-34% image width and 40-78% height, left of the first boiler. Use second reference ONLY to identify components: one controller, TWO blue dosing pumps, red filter, transparent analysis chamber with probe, small connected tubing and one white chemical container with spill tray. Model these as real three-dimensional equipment mounted on a discreet metal stand with contact shadows, real depth, bolts and realistic scale. Do NOT paste the diagram, white board, illustration, water-drop graphic, arrows or a printed photograph. Backing plate plain brushed metal, pumps blue matching AQUAPROX cyan/navy accents. Keep unobstructed two boilers. Premium semi-realistic architectural 3D same as the room. No text, labels, UI or watermark. Change only this local equipment area; entire remainder strictly unchanged."
+    },
+    {
+      "id": "c867f47d-2df6-4e6b-a9eb-5fee36aa71f3",
+      "cost": 2,
+      "prompt": "Create a close-up premium semi-realistic 3D product visualization of the EXACT PROBIO water disinfection kit in the reference schematic. Reference used for component identity, not graphic style. One plain brushed stainless mounting frame, one control cabinet, EXACTLY TWO blue dosing pumps at top, red filter and transparent analysis chamber with REDOX probe lower down, properly connected thin tubes, ONE white product tank in a spill tray underneath. Physical tangible equipment, volumetric depth, satin metal, blue plastic, realistic shadows. No flat printed schematic, no blue droplet graphic, no arrows, no invented third pump, no captions. Dark navy studio backdrop, subtle AQUAPROX cyan edge lighting, photorealistic materials, whole equipment visible with breathing room, 16:9. Matches existing AQUAPROX product videos."
+    }
+  ],
+  "videos": [
+    {
+      "id": "7c07dcf7-9f0d-4cbc-b501-72422bb7adf2",
+      "cost": 8.75,
+      "model": "kling3_0",
+      "params": {
+        "prompt": "Five-second premium equipment demonstration, same exact physical PROBIO kit, one controller, two blue dosing pumps, red filter, transparent analysis chamber, white product tank and tubing. Dark navy background and subtle cyan AQUAPROX rim light. Gentle tiny 5-degree camera parallax and subtle moving clear liquid inside transparent tubes to suggest controlled circulation. Preserve every component count and connection. Pumps remain mounted, no parts morph or disappear, no spinning assembly, no explosive cutaway, no text or logo, no visible bacteria, no promise of heating water. Start and finish near the same view for a calm loop. Clean realistic 3D material rendering, full equipment remains in frame.",
+        "aspect_ratio": "16:9",
+        "duration": 5,
+        "medias": [
+          {
+            "role": "start_image",
+            "data": {
+              "id": "c867f47d-2df6-4e6b-a9eb-5fee36aa71f3",
+              "type": "image_job",
+              "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/hf_20261103_134234_c867f47d-2df6-4e6b-a9eb-5fee36aa71f3.png"
+            }
+          }
+        ],
+        "width": 1920,
+        "height": 1080,
+        "multi_shots": false,
+        "multi_prompt": [],
+        "sound": "off",
+        "cfg_scale": 0.5,
+        "mode": "pro",
+        "kling_elements": [],
+        "kling_element_ids": [],
+        "multi_shot_mode": "custom",
+        "reference_elements": [],
+        "enhance_prompt": false
+      },
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/hf_20261103_134524_7c07dcf7-9f0d-4cbc-b501-72422bb7adf2.mp4"
+    },
+    {
+      "id": "a25512de-ff22-4219-8b05-a41f4d109b5f",
+      "cost": 8.75,
+      "model": "kling3_0",
+      "params": {
+        "prompt": "Same exact modern bathroom close-up, chrome hot-position mixer, beige limestone, warm mirror lighting and adult hand under the stream. 5-second subtle realistic loop: clear cold water flows naturally over the hand into the sink while the hand gently tests it. Preserve anatomy and faucet geometry. No steam, no heat effects, no colored water, no bacteria visible in the water, no text. The hot-position handle remains fixed; this is observation of an ECS fault, not a disinfection outcome. Stable camera and natural semi-realistic 3D style.",
+        "aspect_ratio": "16:9",
+        "duration": 5,
+        "medias": [
+          {
+            "role": "start_image",
+            "data": {
+              "id": "ba2d8ddf-fb26-4ec9-9af9-8f1686d19de3",
+              "type": "media_input",
+              "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/ba2d8ddf-fb26-4ec9-9af9-8f1686d19de3.png"
+            }
+          }
+        ],
+        "width": 1920,
+        "height": 1080,
+        "multi_shots": false,
+        "multi_prompt": [],
+        "sound": "off",
+        "cfg_scale": 0.5,
+        "mode": "pro",
+        "kling_elements": [],
+        "kling_element_ids": [],
+        "multi_shot_mode": "custom",
+        "reference_elements": [],
+        "enhance_prompt": false
+      },
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/hf_20261103_134032_a25512de-ff22-4219-8b05-a41f4d109b5f.mp4"
+    },
+    {
+      "id": "cf630a1d-45f9-4ddd-b0ef-1672cfb2ea01",
+      "cost": 8.75,
+      "model": "kling3_0",
+      "params": {
+        "prompt": "Locked camera, exactly preserve this apartment layout, white radiator, sink, furniture, beige stone, glass shower, warm lighting, all objects. Only animate the white mineral limescale deposits on the shower glass: illustrate a professional descaling intervention, deposits gradually dissolve and are rinsed off the GLASS ONLY, leaving clean transparent glass. Very subtle clear rinsing droplets, no mist, no explosions, no magical equipment, no people, no text. Keep the radiator white throughout. Same high-end semi-realistic architectural 3D style. Finish with same composition and clean glass. Do not imply a water softener removes existing limescale.",
+        "aspect_ratio": "16:9",
+        "duration": 5,
+        "medias": [
+          {
+            "role": "start_image",
+            "data": {
+              "id": "eb9bdae3-7c50-4537-b28b-2d6315939b86",
+              "type": "media_input",
+              "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/eb9bdae3-7c50-4537-b28b-2d6315939b86.png"
+            }
+          }
+        ],
+        "width": 1920,
+        "height": 1080,
+        "multi_shots": false,
+        "multi_prompt": [],
+        "sound": "off",
+        "cfg_scale": 0.5,
+        "mode": "pro",
+        "kling_elements": [],
+        "kling_element_ids": [],
+        "multi_shot_mode": "custom",
+        "reference_elements": [],
+        "enhance_prompt": false
+      },
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/hf_20261103_134023_cf630a1d-45f9-4ddd-b0ef-1672cfb2ea01.mp4"
+    },
+    {
+      "id": "3f433872-3214-4053-be86-cb622daf7a7f",
+      "cost": 8.75,
+      "model": "kling3_0",
+      "params": {
+        "prompt": "Locked camera. Same exact apartment radiator, thermostat, pipes, wall and warm daylight as the reference frames. High-end semi-realistic architectural 3D, no redesign. Educational thermal visualization on the radiator metal ONLY gradually changes from hot upper section and cold blue lower section to homogeneous warm orange after professional sludge flushing. The blue cold lower area recedes smoothly as circulation is restored. Keep grooves sharp. No new equipment, no magnets inside the radiator, no text, no UI, no split screen, no dramatic camera. This illustrates curative flushing, not a filter magically cleaning a radiator.",
+        "aspect_ratio": "16:9",
+        "duration": 5,
+        "medias": [
+          {
+            "role": "start_image",
+            "data": {
+              "id": "ddc310db-de9a-45c6-acfc-8b0f2a9d92f5",
+              "type": "media_input",
+              "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/ddc310db-de9a-45c6-acfc-8b0f2a9d92f5.png"
+            }
+          },
+          {
+            "role": "end_image",
+            "data": {
+              "id": "e0905479-4bd9-4ce6-959d-3a1f8ebf1926",
+              "type": "media_input",
+              "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/e0905479-4bd9-4ce6-959d-3a1f8ebf1926.png"
+            }
+          }
+        ],
+        "width": 1920,
+        "height": 1080,
+        "multi_shots": false,
+        "multi_prompt": [],
+        "sound": "off",
+        "cfg_scale": 0.5,
+        "mode": "pro",
+        "kling_elements": [],
+        "kling_element_ids": [],
+        "multi_shot_mode": "custom",
+        "reference_elements": [],
+        "enhance_prompt": false
+      },
+      "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3K8ps9nA4TM9SF7zG3M6EWcrmbc/hf_20261103_134013_3f433872-3214-4053-be86-cb622daf7a7f.mp4"
+    }
+  ]
+}

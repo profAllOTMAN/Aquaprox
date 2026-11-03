@@ -1,5 +1,9 @@
 # Logement — recette et correspondance des médias
 
+> Mise à jour : [Comparaisons globales et médias](COMPARAISONS-GLOBALES-MEDIAS.md) remplace les indications historiques ci-dessous concernant les boutons Avant/Après, le film d’adoucisseur et la révélation dans le local commun.
+
+> Dernière passe logement : [Alignement Excel et affectation par action](LOGEMENT-ALIGNEMENT-EXCEL.md) détaille les lignes de repérage, les médias curatifs/préventifs et les animations de détartrage et de remise en état ECS.
+
 ## Scène et parcours
 
 La scène existante est conservée : une partie salon avec un radiateur blanc et une salle de bain occupant la majorité de l’image, avec paroi de douche et lavabo. Les trois marqueurs restent des « + », sans légendes, centrés sur les objets concernés. Le clic rapproche la caméra puis ouvre le questionnaire à deux questions. Les indices après erreur sont conservés.

@@ -3,11 +3,14 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, Lightbulb, Pause, Play, Plus, Snowflake, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
+import { boilerRoomScenarios, type BoilerRoomScenario, type ScenarioStepMedia } from "@/data/boilerRoomScenarios";
 import { BOILER_ROOM_REGIONS, BOILER_ROOM_SCENE } from "@/data/boilerRoomScene";
 import { buildingZoneScenarios, type BuildingZoneId } from "@/data/buildingZoneScenarios";
 import { ROOF_REGIONS, ROOF_SCENE } from "@/data/roofScene";
 import { GAINES_REGIONS, GAINES_SCENE, LOGEMENT_REGIONS, LOGEMENT_SCENE } from "@/data/otherZoneScenes";
+import { LOGEMENT_INTERVENTIONS } from "@/data/globalSceneComparisons";
+import { GainesEvidence, GainesReadings } from "./GainesReadings";
+import { GlobalSceneComparison, type SceneComparisonPlan } from "./GlobalSceneComparison";
 import "./BoilerRoomGame.css";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -121,8 +124,9 @@ function Evidence({ scenario, sceneImage, corrected = false }: { scenario: Boile
   };
   const detail = detailFrames[scenario.id];
   const viewBox = radiator ? "395 360 280 410" : detail?.frame ?? (pressure ? "1355 185 235 245" : scenario.id === "glycol-caramelise" ? "870 320 400 440" : "460 170 265 260");
+  if (scenario.id === "desequilibre-colonnes") return <GainesEvidence source={sceneImage} corrected={corrected} />;
   return <div className="boiler-evidence-media" data-evidence-state={corrected ? "after" : "before"} data-water-state={scenario.id === "lavabo-legionelle" ? corrected ? "restored" : "cold" : undefined}>
-    {radiator || (scenario.id === "lavabo-legionelle" && scenario.resultImage) ? <img className={radiator ? "boiler-radiator-thermal" : "boiler-sink-photo"} src={corrected ? scenario.resultImage ?? scenario.detailImage : scenario.detailImage} alt={radiator ? corrected ? "Même radiateur après désembouage : chaleur répartie sur toute sa surface" : "Radiateur en vue thermique pédagogique : chaud en haut et froid en bas, les couleurs suivent ses reliefs" : corrected ? "Même mitigeur après remise en état et contrôle de l’ECS : eau claire dans le lavabo" : "Main sous le jet du mitigeur positionné sur le chaud : constat d’une eau qui reste froide"} /> : pressure || roof || detail ? <svg className="boiler-scene-detail" viewBox={viewBox} role="img" aria-label={radiator ? corrected ? "Vue thermique pédagogique après intervention : chaleur homogène" : "Vue thermique pédagogique du radiateur : partie haute chaude et partie basse froide" : detail?.label ?? (corrected ? "Station solaire remise en service : voyant vert et bac nettoyé, sans rejet" : pressure ? "Gros plan du purgeur de cette scène : gouttelettes, traces humides et coulures sur le ballon" : scenario.id === "glycol-caramelise" ? "Gros plan de la station solaire : voyant rouge et glycol noir dans le bac de récupération" : "Gros plan de l’écran de la pompe à chaleur : alarme rouge")}>
+    {!corrected && scenario.observationVideo ? <SolutionMedia scenario={scenario} media={{ kind: "observation", image: scenario.detailImage ?? sceneImage, label: "Commande chaude, eau froide", location: "Lavabo", productVideo: scenario.observationVideo, motionVideo: scenario.observationVideo }} /> : radiator || (scenario.id === "lavabo-legionelle" && scenario.resultImage) ? <img className={radiator ? "boiler-radiator-thermal" : "boiler-sink-photo"} src={corrected ? scenario.resultImage ?? scenario.detailImage : scenario.detailImage} alt={radiator ? corrected ? "Même radiateur après désembouage : chaleur répartie sur toute sa surface" : "Radiateur en vue thermique pédagogique : chaud en haut et froid en bas, les couleurs suivent ses reliefs" : corrected ? "Même mitigeur après remise en état et contrôle de l’ECS : eau claire dans le lavabo" : "Main sous le jet du mitigeur positionné sur le chaud : constat d’une eau qui reste froide"} /> : pressure || roof || detail ? <svg className="boiler-scene-detail" viewBox={viewBox} role="img" aria-label={radiator ? corrected ? "Vue thermique pédagogique après intervention : chaleur homogène" : "Vue thermique pédagogique du radiateur : partie haute chaude et partie basse froide" : detail?.label ?? (corrected ? "Station solaire remise en service : voyant vert et bac nettoyé, sans rejet" : pressure ? "Gros plan du purgeur de cette scène : gouttelettes, traces humides et coulures sur le ballon" : scenario.id === "glycol-caramelise" ? "Gros plan de la station solaire : voyant rouge et glycol noir dans le bac de récupération" : "Gros plan de l’écran de la pompe à chaleur : alarme rouge")}>
       <image href={sceneImage} width={1672} height={941} />
 
     </svg> : <img src={scenario.detailImage} alt={scenario.id === "conditionnement" ? "Intérieur d’une manchette témoin avec rouille et piqûres de corrosion" : scenario.id === "entartrage" ? "Coupe d’une canalisation avec une couche de dépôt minéral" : "Barreaux magnétiques sortis d’un pot à boues, couverts de dépôt noir"} />}
@@ -131,25 +135,28 @@ function Evidence({ scenario, sceneImage, corrected = false }: { scenario: Boile
   </div>;
 }
 
-function SolutionMedia({ scenario, explanation = false }: { scenario: BoilerRoomScenario; explanation?: boolean }) {
+function SolutionMedia({ scenario, explanation = false, media }: { scenario: BoilerRoomScenario; explanation?: boolean; media?: ScenarioStepMedia }) {
   const reducedMotion = useReducedMotion();
   const [failed, setFailed] = useState(false);
+  const [clientDiagram, setClientDiagram] = useState(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(!reducedMotion);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const source = explanation ? scenario.motionVideo : scenario.productVideo ?? (scenario.motionPoster ? "" : scenario.motionVideo);
-  const poster = explanation ? scenario.motionPoster ?? scenario.equipmentImage : scenario.equipmentImage;
-  if (!explanation && scenario.id === "lavabo-legionelle") return <ProbioEquipment image={scenario.equipmentImage} />;
-  if (!source || failed) return <img className="boiler-product-image" src={poster} alt={scenario.equipment} />;
+  const source = explanation ? media?.motionVideo ?? scenario.motionVideo : media ? media.productVideo ?? "" : scenario.productVideo ?? (scenario.motionPoster ? "" : scenario.motionVideo);
+  const poster = explanation ? media?.motionPoster ?? scenario.motionPoster ?? scenario.equipmentImage : media?.image ?? scenario.equipmentImage;
+  const label = media?.label ?? scenario.equipment;
+  if (clientDiagram) return <div className="boiler-solution-media"><ProbioEquipment image="/assets/tradeshow/equipment/client-reference/kit-probio.png" /><button className="boiler-animation-control" onClick={() => setClientDiagram(false)}>Retour à l’animation</button></div>;
+  if (!source || failed) return <img className="boiler-product-image" src={poster} alt={label} />;
   return <div className={`boiler-solution-media ${explanation && scenario.motionPoster ? "has-explainer" : ""}`}>
+    {source.includes("probio-equipment") && <button className="boiler-probio-view" onClick={() => setClientDiagram(true)}>Voir le schéma client</button>}
     <img src={poster} alt="" aria-hidden="true" />
-    <video ref={videoRef} src={source} poster={poster} autoPlay={!reducedMotion} muted loop playsInline preload="auto" style={{ opacity: ready ? 1 : 0 }} onError={() => setFailed(true)} onPlaying={() => { setReady(true); setPlaying(true); }} onPause={() => setPlaying(false)} onCanPlay={(event) => { if (!reducedMotion && playing) event.currentTarget.play().catch(() => setPlaying(false)); }} aria-label={`${explanation ? "Fonctionnement" : "Présentation de l’équipement"} : ${scenario.equipment}`} />
+    <video ref={videoRef} src={source} poster={poster} autoPlay={!reducedMotion} muted loop playsInline preload="auto" style={{ opacity: ready ? 1 : 0 }} onError={() => setFailed(true)} onPlaying={() => { setReady(true); setPlaying(true); }} onPause={() => setPlaying(false)} onCanPlay={(event) => { if (!reducedMotion && playing) event.currentTarget.play().catch(() => setPlaying(false)); }} aria-label={`${explanation ? "Fonctionnement" : "Présentation de l’équipement"} : ${label}`} />
     <button className="boiler-animation-control" type="button" aria-label={playing ? "Mettre l’animation en pause" : "Lire l’animation"} onClick={() => { const video = videoRef.current; if (!video) return; if (playing) video.pause(); else video.play().catch(() => setPlaying(false)); }}>{playing ? <Pause size={15} /> : <Play size={15} />}{playing ? "Pause" : "Lire"}</button>
   </div>;
 }
 
 export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", prepared = new Set<string>(), onPrepared }: { prepared?: Set<string>; onPrepared?: (id: string) => void; solved: Set<string>; onSolved: (id: string) => void; onBack: () => void; zone?: "chaufferie" | BuildingZoneId }) {
-  const direct = zone === "chaufferie" || zone === "logements";
+  const direct = zone === "chaufferie" || zone === "logements" || zone === "gaines";
   const rooftop = zone === "toiture";
   const scenarios: BoilerRoomScenario[] = zone === "chaufferie" ? boilerRoomScenarios : buildingZoneScenarios.filter((scenario) => scenario.zoneId === zone);
   const sceneAsset = zone === "logements" ? LOGEMENT_SCENE : zone === "gaines" ? GAINES_SCENE : rooftop ? ROOF_SCENE : BOILER_ROOM_SCENE;
@@ -165,7 +172,7 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
   const [wrong, setWrong] = useState<string[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [step, setStep] = useState(0);
-  const [comparison, setComparison] = useState<"before" | "after">("after");
+  const [comparisonOpen, setComparisonOpen] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [revealAfter, setRevealAfter] = useState(false);
   const [explanation, setExplanation] = useState(false);
@@ -175,13 +182,16 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
 
   useEffect(() => {
     for (const scenario of (zone === "chaufferie" ? boilerRoomScenarios : buildingZoneScenarios.filter((item) => item.zoneId === zone))) {
-      for (const src of [scenario.detailImage, scenario.resultImage, scenario.equipmentImage, scenario.afterSceneImage]) {
+      for (const src of [scenario.detailImage, scenario.resultImage, scenario.equipmentImage, scenario.afterSceneImage, LOGEMENT_INTERVENTIONS[scenario.id]?.before, LOGEMENT_INTERVENTIONS[scenario.id]?.after]) {
         if (src) { const img = new Image(); img.src = src; img.decode().catch(() => undefined); }
+      }
+      for (const action of scenario.correctionSteps) {
+        if (action.media) { const img = new Image(); img.src = action.media.image; img.decode().catch(() => undefined); }
       }
     }
   }, [zone]);
   useEffect(() => {
-    if (!active || approaching) return;
+    if (!active || approaching || comparisonOpen) return;
     const close = (event: KeyboardEvent) => {
       if (event.key === "Escape") { setActive(null); setInstalling(false); setExplanation(false); }
       if (event.key === "Tab") {
@@ -194,7 +204,7 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
     const focus = requestAnimationFrame(() => document.querySelector<HTMLButtonElement>('.boiler-close, .boiler-reveal-status button')?.focus({ preventScroll: true }));
     window.addEventListener("keydown", close);
     return () => { cancelAnimationFrame(focus); window.removeEventListener("keydown", close); };
-  }, [active, approaching, installing]);
+  }, [active, approaching, installing, comparisonOpen]);
   useEffect(() => {
     if (!approaching) return;
     const timer = window.setTimeout(() => setApproaching(false), reducedMotion ? 0 : 720);
@@ -211,7 +221,7 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
   }, [installing, reducedMotion, direct]);
 
   const open = (scenario: BoilerRoomScenario) => {
-    setActive(scenario); setChoice(null); setWrong([]); setShowHint(false); setStep(direct && prepared.has(scenario.id) ? Math.min(1, scenario.correctionSteps.length - 1) : 0); setComparison("after");
+    setActive(scenario); setChoice(null); setWrong([]); setShowHint(false); setStep(direct && prepared.has(scenario.id) ? Math.min(1, scenario.correctionSteps.length - 1) : 0); setComparisonOpen(false);
     setApproaching(!reducedMotion); setExplanation(false); setResultPreview(true); setInstalling(false);
     setPhase(solved.has(scenario.id) ? "installed" : direct && prepared.has(scenario.id) ? "action" : "question");
   };
@@ -224,36 +234,57 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
   };
   const applyAction = () => {
     if (!active) return;
-    if (step < active.correctionSteps.length - 1) { onPrepared?.(active.id); setStep((value) => value + 1); }
-    else { onSolved(active.id); setRevealAfter(false); setInstalling(true); setExplanation(false); setComparison("after"); next("installed"); }
+    if (step < active.correctionSteps.length - 1) { onPrepared?.(active.id); setExplanation(false); setStep((value) => value + 1); }
+    else { onSolved(active.id); setRevealAfter(false); setInstalling(true); setExplanation(false); setComparisonOpen(false); next("installed"); }
   };
   const quiz = phase === "question" || phase === "treatment";
   const feedback = phase === "feedback" || phase === "treatmentFeedback";
   const answers = active && inquiry ? (phase === "question" ? active.answers : inquiry.choices) : [];
   const action = active?.correctionSteps[step];
-  const before = (phase === "installed" || (direct && phase === "action")) && comparison === "before";
+  const actionMedia = phase === "action" ? action?.media : undefined;
   // The solar solution must show the operational station, not repeat its leaking diagnostic image.
   const solarSolutionPreview = active?.id === "glycol-caramelise" && (phase === "treatmentFeedback" || phase === "action");
   const learningVisual = phase === "feedback" ? active?.diagnosticImage : undefined;
-  const productPhase = (direct && phase === "action" && explanation) || solarSolutionPreview || (Boolean(active?.motionPoster) && phase === "treatmentFeedback") || (phase === "installed" && comparison === "after") || (phase === "action" && action?.phase === "preventive");
-  const showingProduct = active?.id === "lavabo-legionelle" && phase === "action" && !explanation ? step === 0 : productPhase;
-  const roomResult = zone === "logements" && phase === "installed" && comparison === "after" && !explanation && resultPreview;
-  const returnVisualLabel = zone === "logements" && phase === "installed" && resultPreview ? "Revenir au résultat" : "Revenir à l’équipement";
-  const region = active ? direct && (installing || (phase === "installed" && comparison === "after")) ? { ...regions[active.id], x: active.solutionX, y: active.solutionY, zoom: 1.65 } : regions[active.id] : null;
+  const productPhase = (direct && phase === "action" && explanation) || solarSolutionPreview || (explanation && phase === "treatmentFeedback") || (phase === "installed") || (phase === "action" && action?.phase === "preventive");
+  const showingProduct = actionMedia ? explanation || actionMedia.kind === "equipment" : active?.id === "lavabo-legionelle" && phase === "action" && !explanation ? step === 0 : productPhase;
+  const roomResult = zone === "logements" && phase === "installed" && !explanation && resultPreview;
+  const returnVisualLabel = actionMedia?.kind === "observation" ? "Revenir à l’observation" : zone === "logements" && phase === "installed" && resultPreview ? "Revenir au résultat" : "Revenir à l’équipement";
+  const revealIntervention = zone === "logements" && installing && active ? LOGEMENT_INTERVENTIONS[active.id] : undefined;
+  const effectPoint = revealIntervention?.focus ?? (active ? { x: active.solutionX, y: active.solutionY } : { x: 50, y: 50 });
+  const region = active ? installing ? { ...regions[active.id], x: 50, y: 50, zoom: 1 } : direct && phase === "installed" ? { ...regions[active.id], x: active.solutionX, y: active.solutionY, zoom: 1.65 } : regions[active.id] : null;
   const cameraOffset = (position: number, zoom: number) => Math.max(-50 * (zoom - 1), Math.min(50 * (zoom - 1), (50 - position) * zoom));
   const hotspot = (scenario: BoilerRoomScenario) => {
+    if (zone === "logements") return LOGEMENT_REGIONS[scenario.id as keyof typeof LOGEMENT_REGIONS].marker;
     if (direct) return solved.has(scenario.id) ? { x: scenario.solutionX, y: scenario.solutionY } : regions[scenario.id];
     return { x: regions[scenario.id].x + 3.3, y: regions[scenario.id].y - 5.5 };
   };
-  const closeInvestigation = () => { setActive(null); setApproaching(false); setExplanation(false); setInstalling(false); };
+  const intervention = active && zone === "logements" ? LOGEMENT_INTERVENTIONS[active.id] : undefined;
+  const comparisonPlan: SceneComparisonPlan = intervention ? {
+    before: intervention.before,
+    layers: [{ id: active!.id, image: intervention.after, patches: intervention.patches }],
+    location: intervention.location,
+    note: intervention.note,
+  } : {
+    before: sceneAsset.before,
+    layers: scenarios.filter((item) => solved.has(item.id)).map((item) => ({ id: item.id, image: zone === "chaufferie" ? item.afterSceneImage : sceneAsset.after, patches: regions[item.id].patches })),
+    location: roomLabel,
+    note: zone === "gaines" ? "Quatre compteurs individuels et six vannes sont conservés. La mallette sert au contrôle de la prestation, elle n’est pas une installation permanente." : "Même environnement et mêmes équipements existants, avec les corrections AQUAPROX intégrées.",
+    gaines: zone === "gaines",
+  };
+  const closeInvestigation = () => { setActive(null); setApproaching(false); setExplanation(false); setComparisonOpen(false); setInstalling(false); };
 
   return <motion.section className={`trade-scene boiler-game ${active && !approaching && !(direct && installing) ? "has-investigation" : ""} ${direct && installing ? "is-revealing" : ""} ${approaching ? "is-approaching" : ""}`} data-zone={zone} aria-label={`Jeu de diagnostic : ${roomLabel.toLowerCase()}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? 0 : .5, ease }}>
     <div className="boiler-stage" aria-hidden="true">
       <motion.div className="boiler-camera" data-focus={active?.id ?? "overview"} animate={{ scale: region ? region.zoom : 1, x: region ? `${cameraOffset(region.x, region.zoom)}%` : "0%", y: region ? `${cameraOffset(region.y, region.zoom)}%` : "0%" }} transition={{ duration: reducedMotion ? 0 : .72, ease }}>
       <img className="boiler-stage-image" src={sceneAsset.before} alt="" fetchPriority="high" />
-      {scenarios.filter((s) => (solved.has(s.id) || (solarSolutionPreview && active?.id === s.id)) && !((before || (direct && installing && !revealAfter)) && active?.id === s.id)).flatMap((scenario) => regions[scenario.id].patches.map((patch, index) => <motion.img key={`${scenario.id}-${index}`} className="boiler-stage-image boiler-installed-layer" data-correction={scenario.id} src={zone === "chaufferie" ? scenario.afterSceneImage : sceneAsset.after} alt="" style={{ clipPath: patch }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion ? 0 : 1.1, ease }} />))}
-      {zone === "logements" && solved.has("lavabo-legionelle") && !(active?.id === "lavabo-legionelle" && (before || (installing && !revealAfter))) && <svg className="boiler-stage-observation" viewBox="0 0 1672 941" aria-hidden="true"><SinkObservation corrected /></svg>}
-      {direct && installing && active && !reducedMotion && <motion.div className="boiler-result-glow" style={{ left: `${active.solutionX}%`, top: `${active.solutionY}%`, x: "-50%", y: "-50%" }} initial={{ opacity: 0, scale: .8 }} animate={{ opacity: [0, .8, 0], scale: [1, 1.15, 1.35] }} transition={{ duration: 2.5, ease }} />}
+      {scenarios.filter((item) => (solved.has(item.id) || (solarSolutionPreview && active?.id === item.id)) && !(direct && installing && !revealAfter && active?.id === item.id)).flatMap((scenario) => regions[scenario.id].patches.map((patch, index) => <motion.img key={`${scenario.id}-${index}`} className="boiler-stage-image boiler-installed-layer" data-correction={scenario.id} src={zone === "chaufferie" ? scenario.afterSceneImage : sceneAsset.after} alt="" style={{ clipPath: patch }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion ? 0 : 1.1, ease }} />))}
+      {zone === "gaines" && <svg className="boiler-stage-observation" viewBox="0 0 1672 941" aria-label="Mesures par logement"><GainesReadings corrected={solved.has("desequilibre-colonnes") && !(installing && !revealAfter)} /></svg>}
+      {zone === "logements" && !revealIntervention && solved.has("lavabo-legionelle") && <svg className="boiler-stage-observation" viewBox="0 0 1672 941" aria-hidden="true"><SinkObservation corrected /></svg>}
+      <AnimatePresence>{revealIntervention && <motion.div key={active!.id} className="boiler-intervention-layers" data-intervention-location={revealIntervention.location} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? 0 : .65, ease }}>
+        <img className="boiler-stage-image" src={revealIntervention.before} alt="" />
+        {revealAfter && <motion.div className="boiler-intervention-layers" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion ? 0 : 1.1, ease }}>{revealIntervention.patches.map((patch, index) => <img key={index} className="boiler-stage-image boiler-installed-layer" data-correction={active!.id} src={revealIntervention.after} alt="" style={{ clipPath: patch }} />)}</motion.div>}
+      </motion.div>}</AnimatePresence>
+      {direct && installing && active && !reducedMotion && <motion.div className="boiler-result-glow" style={{ left: `${effectPoint.x}%`, top: `${effectPoint.y}%`, x: "-50%", y: "-50%" }} initial={{ opacity: 0, scale: .8 }} animate={{ opacity: [0, .8, 0], scale: [1, 1.15, 1.35] }} transition={{ duration: 2.5, ease }} />}
       {approaching && region && <div className="boiler-focus-ring" style={{ left: `${region.x}%`, top: `${region.y}%` }} />}
       </motion.div>
     </div>
@@ -265,21 +296,21 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
     </header>
     {!active && <>
       <div className="boiler-stage boiler-hotspots">
-        {!direct && <svg className="boiler-hotspot-leaders" aria-hidden="true">{scenarios.map((scenario) => { const point = regions[scenario.id]; return <g key={scenario.id}><line x1={`${point.x}%`} y1={`${point.y}%`} x2={`${point.x + 3.3}%`} y2={`${point.y - 5.5}%`} /><circle cx={`${point.x}%`} cy={`${point.y}%`} r="4" /></g>; })}</svg>}
-        {scenarios.map((scenario) => <button key={scenario.id} type="button" className={`boiler-plus ${solved.has(scenario.id) ? "is-solved" : ""}`} style={{ left: `${hotspot(scenario).x}%`, top: `${hotspot(scenario).y}%` }} onClick={() => open(scenario)} aria-label={solved.has(scenario.id) ? `Revoir la correction ${scenario.index}` : `Explorer le point ${scenario.index}`}><span />{direct || !solved.has(scenario.id) ? <Plus size={27} /> : <Check size={25} />}</button>)}
+        {(!direct || zone === "logements") && <svg className="boiler-hotspot-leaders" aria-hidden="true">{scenarios.map((scenario) => { const point = regions[scenario.id], marker = hotspot(scenario); return <g key={scenario.id} data-hotspot-target={scenario.id}><line x1={`${point.x}%`} y1={`${point.y}%`} x2={`${marker.x}%`} y2={`${marker.y}%`} /><circle cx={`${point.x}%`} cy={`${point.y}%`} r="4" /></g>; })}</svg>}
+        {scenarios.map((scenario) => <button key={scenario.id} type="button" data-hotspot={scenario.id} className={`boiler-plus ${solved.has(scenario.id) ? "is-solved" : ""}`} style={{ left: `${hotspot(scenario).x}%`, top: `${hotspot(scenario).y}%` }} onClick={() => open(scenario)} aria-label={solved.has(scenario.id) ? `Revoir la correction ${scenario.index}` : `Explorer le point ${scenario.index}`}><span /><Plus size={27} /></button>)}
       </div>
-      <div className="boiler-mission"><span>{count === scenarios.length ? "Mission accomplie" : "À vous d’enquêter"}</span><h1>{count === scenarios.length ? completionTitle : direct ? "Identifiez le risque, appliquez la solution." : "Que se cache-t-il dans cette installation ?"}</h1><p>{count === scenarios.length ? direct ? "Touchez un + pour revoir le problème et sa correction." : "Touchez une coche pour revoir le problème et sa correction." : direct ? "Touchez un +, trouvez la cause et découvrez l’équipement adapté." : "Touchez un +, observez l’indice et trouvez la cause."}</p></div>
+      <div className="boiler-mission"><span>{count === scenarios.length ? "Mission accomplie" : "À vous d’enquêter"}</span><h1>{count === scenarios.length ? completionTitle : direct ? "Identifiez le risque, appliquez la solution." : "Que se cache-t-il dans cette installation ?"}</h1><p>{count === scenarios.length ? direct ? "Touchez un + pour revoir le problème et sa correction." : "Touchez un + pour revoir le problème et sa correction." : direct ? "Touchez un +, trouvez la cause et découvrez l’équipement adapté." : "Touchez un +, observez l’indice et trouvez la cause."}</p></div>
     </>}
-    {direct && installing && active && <motion.div className="boiler-reveal-status" style={{ x: "-50%" }} role="status" aria-live="polite" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}><span>{revealAfter ? "Après intervention" : "Avant intervention"}</span><strong>{revealAfter ? active.equipment : active.diagnosis}</strong><p>{revealAfter ? active.benefit : "Observez la zone : la solution va apparaître."}</p><button type="button" onClick={() => setInstalling(false)}>Voir le résultat<ArrowRight size={16} /></button></motion.div>}
-    <AnimatePresence mode="wait">{active && inquiry && !approaching && !(direct && installing) && <motion.div key={active.id} className={`boiler-investigation ${phase === "installed" ? "is-installed" : ""}`} role="dialog" aria-modal="true" aria-labelledby="boiler-question-title" initial={{ opacity: 0, y: reducedMotion ? 0 : 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: .3, ease }}>
+    {direct && installing && active && <motion.div className="boiler-reveal-status" style={{ x: "-50%" }} role="status" aria-live="polite" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}><span>{revealIntervention?.location ?? roomLabel} · {revealAfter ? "Après intervention" : "Avant intervention"}</span><strong>{revealAfter ? active.equipment : active.diagnosis}</strong><p>{revealAfter ? active.benefit : "Observez la zone : la solution va apparaître."}</p><button type="button" onClick={() => setInstalling(false)}>Voir le résultat<ArrowRight size={16} /></button></motion.div>}
+    <AnimatePresence mode="wait">{active && inquiry && !approaching && !comparisonOpen && !(direct && installing) && <motion.div key={active.id} className={`boiler-investigation ${phase === "installed" ? "is-installed" : ""}`} role="dialog" aria-modal="true" aria-labelledby="boiler-question-title" initial={{ opacity: 0, y: reducedMotion ? 0 : 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: .3, ease }}>
       <button className="boiler-close" type="button" onClick={closeInvestigation} aria-label={`Fermer et revenir ${returnLabel}`}><X size={23} /></button>
       <div className="boiler-visual">
-        <AnimatePresence initial={false}><motion.div key={roomResult ? "room-result" : learningVisual ? "diagnostic" : showingProduct ? "product" : "evidence"} className="boiler-visual-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? 0 : .4 }}>{roomResult ? <Evidence scenario={active} sceneImage={sceneAsset.after} corrected /> : learningVisual ? <><img className="boiler-product-image" src={learningVisual} alt="Coupe pédagogique d’un mitigeur et des canalisations : illustration du risque bactérien" /><div className="boiler-diagnostic-note">Illustration du risque · contrôle nécessaire</div></> : showingProduct ? active.id === "glycol-caramelise" ? <Evidence scenario={active} sceneImage={sceneAsset.after} corrected /> : <SolutionMedia key={`${active.id}-${explanation}`} scenario={active} explanation={direct ? explanation : true} /> : <Evidence scenario={active} sceneImage={sceneAsset.before} />}</motion.div></AnimatePresence>
-        <div className="boiler-visual-caption"><small>{roomResult ? "Résultat dans le logement" : direct && showingProduct ? explanation ? "Fonctionnement · animation pédagogique" : active.equipmentLocation ?? (phase === "installed" ? "Solution installée" : "Équipement proposé") : solarSolutionPreview ? "Résultat de l’intervention" : phase === "installed" ? comparison === "after" ? "Solution AQUAPROX" : "Avant intervention" : phase === "action" ? `Action ${step + 1} / ${active.correctionSteps.length}` : `Point d’observation ${active.index}`}</small><strong>{roomResult ? ({"radiateur-emboue": "Radiateur · chaleur homogène", "douche-entartrage": "Paroi de douche nettoyée", "lavabo-legionelle": "Production et distribution ECS rétablies"}[active.id] ?? active.equipment) : direct && showingProduct ? active.equipmentMediaLabel ?? active.equipment : active.id === "glycol-caramelise" && showingProduct ? "Station opérationnelle · aucun rejet" : phase === "installed" ? comparison === "after" ? active.equipment : active.diagnosis : phase === "action" ? action?.title : "Observez les détails"}</strong></div>
+        <AnimatePresence initial={false}><motion.div key={`${roomResult ? "room-result" : learningVisual ? "diagnostic" : showingProduct ? "product" : "evidence"}-${phase === "action" ? step : ""}`} className="boiler-visual-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? 0 : .4 }}>{roomResult ? <Evidence scenario={active} sceneImage={sceneAsset.after} corrected /> : learningVisual ? <><img className="boiler-product-image" src={learningVisual} alt="Coupe pédagogique d’un mitigeur et des canalisations : illustration du risque bactérien" /><div className="boiler-diagnostic-note">Illustration du risque · contrôle nécessaire</div></> : showingProduct ? active.id === "glycol-caramelise" ? <Evidence scenario={active} sceneImage={sceneAsset.after} corrected /> : <SolutionMedia key={`${active.id}-${step}-${explanation}`} scenario={active} media={actionMedia} explanation={direct ? explanation : true} /> : <Evidence scenario={active} sceneImage={sceneAsset.before} />}</motion.div></AnimatePresence>
+        <div className="boiler-visual-caption"><small>{roomResult ? "Résultat dans le logement" : direct && showingProduct ? explanation ? "Fonctionnement · animation pédagogique" : actionMedia?.location ?? active.equipmentLocation ?? (phase === "installed" ? "Solution installée" : "Équipement proposé") : solarSolutionPreview ? "Résultat de l’intervention" : phase === "installed" ? "Solution AQUAPROX" : phase === "action" ? `Action ${step + 1} / ${active.correctionSteps.length}` : `Point d’observation ${active.index}`}</small><strong>{roomResult ? ({"radiateur-emboue": "Radiateur · chaleur homogène", "douche-entartrage": "Paroi de douche nettoyée", "lavabo-legionelle": "Production et distribution ECS rétablies"}[active.id] ?? active.equipment) : direct && showingProduct ? actionMedia?.label ?? active.equipmentMediaLabel ?? active.equipment : active.id === "glycol-caramelise" && showingProduct ? "Station opérationnelle · aucun rejet" : phase === "installed" ? active.equipment : phase === "action" ? action?.title : "Observez les détails"}</strong></div>
       </div>
       <div className="boiler-panel">
         <div className="boiler-progress-rail" aria-label="Progression de l’enquête"><span className="is-current">01 Observer</span><i /><span className={phase !== "question" ? "is-current" : ""}>02 Comprendre</span><i /><span className={phase === "action" || phase === "installed" ? "is-current" : ""}>03 Corriger</span></div>
-        <AnimatePresence mode="wait"><motion.div className="boiler-panel-body" key={`${phase}-${step}-${comparison}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .18 }}>
+        <AnimatePresence mode="wait"><motion.div className="boiler-panel-body" key={`${phase}-${step}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .18 }}>
           {quiz && <>
             <span className="boiler-eyebrow">Question {phase === "question" ? "1" : "2"} / 2</span>
             <h2 id="boiler-question-title">{phase === "question" ? active.question : inquiry.treatment}</h2>
@@ -294,30 +325,31 @@ export function BoilerRoomGame({ solved, onSolved, onBack, zone = "chaufferie", 
             <h2 id="boiler-question-title">{phase === "feedback" ? active.diagnosis : "La bonne action, au bon moment."}</h2>
             <div className="boiler-explanation"><small>Pourquoi ?</small><p>{phase === "feedback" ? inquiry.explanation : inquiry.treatmentWhy}</p></div>
             <div className="boiler-outcome"><small>{phase === "feedback" ? "Ce que cela provoque" : "Ce que vous améliorez"}</small><strong>{phase === "feedback" ? active.consequences.slice(0, 2).join(" · ") : active.benefit}</strong></div>
-            {direct && phase === "treatmentFeedback" && <button className="boiler-how boiler-feedback-how" type="button" aria-pressed={explanation} onClick={() => setExplanation(!explanation)}><Play size={16} />{explanation ? "Revenir à l’équipement" : "Voir comment ça fonctionne"}</button>}
+            {direct && active.motionVideo && phase === "treatmentFeedback" && <button className="boiler-how boiler-feedback-how" type="button" aria-pressed={explanation} onClick={() => setExplanation(!explanation)}><Play size={16} />{explanation ? "Revenir à l’équipement" : "Voir comment ça fonctionne"}</button>}
             <button className="boiler-primary" type="button" onClick={() => next(phase === "feedback" ? "treatment" : "action")}>{phase === "feedback" ? "Comment corriger ce problème ?" : "Passer à l’intervention"}<ArrowRight size={20} /></button>
           </>}
           {phase === "action" && action && <>
             <span className="boiler-eyebrow">{direct ? active.correctionSteps.length > 1 ? `Action ${step + 1} / ${active.correctionSteps.length} · ${action.title}` : "Une action pour protéger le réseau" : `${action.phase === "curative" ? "Traiter le défaut existant" : "Protéger durablement"} · ${step + 1} / ${active.correctionSteps.length}`}</span>
-            <h2 id="boiler-question-title">{direct ? active.equipment : action.title}</h2>
+            <h2 id="boiler-question-title">{zone === "logements" ? action.title : direct ? active.equipment : action.title}</h2>
             {direct && <div className="boiler-direct-diagnosis"><small>Diagnostic confirmé</small><strong>{active.diagnosis}</strong></div>}
             {direct && active.correctionSteps.length > 1 && <ol className="boiler-treatment-sequence" aria-label="Les deux interventions nécessaires">{active.correctionSteps.map((item, index) => <li key={item.phase} className={index < step ? "is-done" : index === step ? "is-current" : ""} aria-current={index === step ? "step" : undefined}><span>{index < step ? <Check size={14} /> : index + 1}</span><div><strong>{item.title}</strong><small>{index < step ? "Réalisé" : index === step ? "À appliquer" : "Ensuite"}</small></div></li>)}</ol>}
             <p>{action.description}</p>
-            {direct && <button className="boiler-how" type="button" aria-pressed={explanation} onClick={() => { setExplanation(!explanation); setComparison("after"); }}><Play size={16} />{explanation ? "Revenir à l’équipement" : "Voir comment ça fonctionne"}</button>}
+            {direct && active.motionVideo && <button className="boiler-how" type="button" aria-pressed={explanation} onClick={() => { setExplanation(!explanation); setComparisonOpen(false); }}><Play size={16} />{explanation ? returnVisualLabel : "Voir comment ça fonctionne"}</button>}
             <div className="boiler-outcome"><small>{direct ? "Le bénéfice" : action.phase === "curative" ? "D’abord" : "Ensuite"}</small><strong>{direct ? active.benefit : action.phase === "curative" ? active.curativeAction : active.preventiveAction}</strong></div>
             <button className="boiler-primary" type="button" onClick={applyAction}>{action.actionLabel}<ArrowRight size={20} /></button>
           </>}
           {phase === "installed" && <>
             <span className="boiler-correct" role="status"><CheckCircle2 size={21} />{installing ? "Installation de la solution…" : "Correction réalisée"}</span>
-            <h2 id="boiler-question-title">{comparison === "after" ? active.equipment : active.diagnosis}</h2>
-            <p>{comparison === "after" ? active.solution : inquiry.explanation}</p>
-            <div className="boiler-outcome"><small>{comparison === "after" ? "Le bénéfice pour votre installation" : "Le problème avant intervention"}</small><strong>{comparison === "after" ? active.benefit : active.consequences.slice(0, 2).join(" · ")}</strong></div>
-            {direct && comparison === "after" && <div className="boiler-result-actions">{zone === "logements" && <button className="boiler-how" type="button" aria-pressed={!resultPreview} onClick={() => { setExplanation(false); setResultPreview(!resultPreview); }}>{resultPreview ? "Voir l’équipement" : "Voir le résultat"}</button>}<button className="boiler-how" type="button" aria-pressed={explanation} onClick={() => setExplanation(!explanation)}><Play size={16} />{explanation ? returnVisualLabel : "Voir comment ça fonctionne"}</button><button className="boiler-how" type="button" onClick={() => { setRevealAfter(false); setExplanation(false); setInstalling(true); }}>Rejouer l’avant / après</button></div>}
-            <div className="boiler-comparison" role="group" aria-label="Comparer avant et après"><button type="button" aria-pressed={comparison === "before"} onClick={() => setComparison("before")}>Avant</button><button type="button" aria-pressed={comparison === "after"} onClick={() => setComparison("after")}>Après</button></div>
+            <h2 id="boiler-question-title">{active.equipment}</h2>
+            <p>{active.solution}</p>
+            <div className="boiler-outcome"><small>Le bénéfice pour votre installation</small><strong>{active.benefit}</strong></div>
+            {direct && <div className="boiler-result-actions">{zone === "logements" && <button className="boiler-how" type="button" aria-pressed={!resultPreview} onClick={() => { setExplanation(false); setResultPreview(!resultPreview); }}>{resultPreview ? "Voir l’équipement" : "Voir le résultat"}</button>}{active.motionVideo && <button className="boiler-how" type="button" aria-pressed={explanation} onClick={() => setExplanation(!explanation)}><Play size={16} />{explanation ? returnVisualLabel : "Voir comment ça fonctionne"}</button>}<button className="boiler-how" type="button" onClick={() => { setRevealAfter(false); setExplanation(false); setInstalling(true); }}>Rejouer l’apparition dans la scène</button></div>}
+            <button className="boiler-compare-scene" type="button" onClick={() => { setExplanation(false); setComparisonOpen(true); }}>Comparer la scène globale avant / après<ArrowRight size={18} /></button>
             <button className="boiler-primary" type="button" onClick={closeInvestigation}>{count === scenarios.length ? "Voir les corrections" : "Continuer l’enquête"}<ArrowRight size={20} /></button>
           </>}
         </motion.div></AnimatePresence>
       </div>
     </motion.div>}</AnimatePresence>
+    {comparisonOpen && active && <GlobalSceneComparison plan={comparisonPlan} equipment={active.equipment} onClose={() => setComparisonOpen(false)} />}
   </motion.section>;
 }

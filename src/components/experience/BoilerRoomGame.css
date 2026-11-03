@@ -101,3 +101,25 @@
 .boiler-control-result{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;margin:12px 0 0;border:1px solid #4e927f;background:#2e675322;color:#bde9da;font-size:12px;line-height:1.4}.boiler-control-result svg{flex:0 0 auto}
 @media(prefers-reduced-motion:reduce){.boiler-water-stream{animation:none}}
 @media(max-width:600px){.boiler-game[data-zone="logements"] .boiler-plus{width:42px;height:42px}.boiler-probio-sheet{top:38px;height:calc(100% - 95px)}.boiler-probio-view{top:5px;left:6px;min-height:28px;padding:5px 8px;font-size:10px}.boiler-diagnostic-note{top:6px;left:6px;font-size:10px;padding:5px 8px}}
+
+.boiler-intervention-layers{position:absolute;inset:0}
+.boiler-compare-scene{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:10px 14px;margin-bottom:18px;border:1px solid #77bfd8;border-radius:2px 6px 2px 6px;color:#dff6ff;background:#0b3048;font:700 13px var(--font-lato),Arial,sans-serif;text-align:left;cursor:pointer}
+.boiler-compare-scene:hover{background:#16445d}.boiler-compare-scene:focus-visible{outline:2px solid #a4e9ff;outline-offset:3px}
+.global-scene-comparison{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;gap:12px;padding:18px 26px;background:#061426;color:#edf9ff;font-family:var(--font-lato),Arial,sans-serif}
+.global-scene-comparison>header{display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:58px}
+.global-scene-comparison header small{color:#8ddaf2;text-transform:uppercase;letter-spacing:.12em;font-size:10px}.global-scene-comparison h2{font-size:clamp(18px,1.7vw,28px);margin:5px 0 0;line-height:1.15}
+.global-comparison-close{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:1px solid #6c9fb9;border-radius:4px;color:#e8fbff;background:#102f46;cursor:pointer}
+.global-comparison-close:focus-visible,.global-comparison-tabs button:focus-visible{outline:2px solid #bcefff;outline-offset:3px}
+.global-comparison-frame{position:relative;width:min(calc(100vw - 52px),calc((100dvh - 218px)*1.7768));aspect-ratio:1672/941;margin:auto;flex-shrink:0;overflow:hidden;border:1px solid #436b84;background:#071a2a}
+.global-comparison-base,.global-comparison-layers,.global-comparison-layers>img,.global-comparison-readings{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.global-comparison-layers{transition:opacity .65s ease;pointer-events:none}.global-comparison-readings{pointer-events:none}
+.global-scene-comparison>footer{display:flex;align-items:center;gap:25px;min-height:100px}
+.global-comparison-tabs{display:flex;flex:0 0 260px;gap:5px;padding:5px;border:1px solid #456d88;background:#0b243a}.global-comparison-tabs button{flex:1;min-height:46px;border:0;border-radius:2px;background:transparent;color:#adcadd;font:700 15px var(--font-lato),Arial,sans-serif;cursor:pointer}.global-comparison-tabs button[aria-pressed=true]{background:#80d6ef;color:#06182b}
+.global-comparison-caption strong{font-size:clamp(16px,1.4vw,22px)}.global-comparison-caption p{max-width:930px;margin:7px 0 0;color:#b9d5e5;font-size:14px;line-height:1.4}
+.gaines-evidence-grid{position:absolute;inset:16px 16px 115px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px}
+.gaines-evidence-grid>div{position:relative;overflow:hidden;border:1px solid #47738e;background:#081e32}.gaines-evidence-grid>div.is-low-flow{border-color:#dcb47a}
+.gaines-evidence-grid>div>strong{position:absolute;z-index:1;top:6px;left:6px;padding:5px 8px;background:#06192be6;color:#d8f2fb;font-size:11px}.gaines-evidence-grid svg{display:block;width:100%;height:100%;overflow:hidden}.gaines-evidence-grid>div>span{position:absolute;bottom:5px;right:6px;padding:4px 9px;background:#06192bea;color:#cdf0ff;border:1px solid #6aa5bf;font-size:14px;font-weight:700}.gaines-evidence-grid .is-low-flow>span{color:#ffe2a8;border-color:#dcb47a}
+@media(max-height:780px){.boiler-compare-scene{min-height:38px;padding:8px 12px;font-size:12px;margin-bottom:12px}}
+@media(max-width:650px){.global-scene-comparison{padding:12px;gap:8px}.global-comparison-frame{width:min(calc(100vw - 24px),calc((100dvh - 290px)*1.7768))}.global-scene-comparison>footer{display:block;min-height:170px}.global-comparison-tabs{margin-bottom:12px}.global-comparison-caption p{font-size:12px}.global-comparison-caption strong{font-size:16px}.gaines-evidence-grid{inset:6px 6px 60px;gap:4px}.gaines-evidence-grid>div>strong{font-size:8px;padding:3px}.gaines-evidence-grid>div>span{font-size:10px;padding:2px 5px}}
+@media(prefers-reduced-motion:reduce){.global-comparison-layers{transition:none}}
+.boiler-solution-media > .boiler-probio-view{left:auto;right:12px;z-index:3}

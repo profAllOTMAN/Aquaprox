@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
 import { buildingZoneScenarios, type BuildingZoneId } from "@/data/buildingZoneScenarios";
 import { BoilerRoomGame } from "./BoilerRoomGame";
-import { LOGEMENT_SCENE } from "@/data/otherZoneScenes";
+import { GAINES_SCENE, LOGEMENT_SCENE } from "@/data/otherZoneScenes";
 import { BOILER_ROOM_SCENE } from "@/data/boilerRoomScene";
 import { ROOF_SCENE } from "@/data/roofScene";
 
@@ -24,7 +24,7 @@ type ZoneId = BuildingZoneId | "chaufferie";
 const ZONE_META: Record<ZoneId, { label: string; flowLabel: string; video: string }> = {
   chaufferie: { label: "Chaufferie", flowLabel: "Chauffage collectif", video: "/assets/tradeshow/motion/building-to-chaufferie.mp4" },
   logements: { label: "Logement", flowLabel: "Confort du logement", video: LOGEMENT_SCENE.transitionVideo },
-  gaines: { label: "Gaines techniques", flowLabel: "Distribution verticale", video: "/assets/tradeshow/motion/building-to-gaines.mp4" },
+  gaines: { label: "Gaines techniques", flowLabel: "Distribution verticale", video: GAINES_SCENE.transitionVideo },
   toiture: { label: "Toiture", flowLabel: "Production en toiture", video: ROOF_SCENE.transitionVideo },
 };
 const ENABLED_ZONES = new Set<ZoneId>(["chaufferie", "logements", "gaines", "toiture"]);
