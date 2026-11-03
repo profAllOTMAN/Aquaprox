@@ -35,7 +35,12 @@ export type BoilerRoomScenario = {
   beforeSceneImage?: string;
   afterSceneImage: string;
   motionVideo: string;
+  motionPoster?: string;
+  productVideo?: string;
+  equipmentLocation?: string;
+  equipmentMediaLabel?: string;
   detailImage?: string;
+  resultImage?: string;
   diagnosticImage?: string;
   imagePosition?: string;
   diagnosticMethod?: string;
@@ -56,7 +61,7 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     signalLabel: "Dépôts ferreux",
     x: BOILER_ROOM_REGIONS["corrosion-boues"].x,
     y: BOILER_ROOM_REGIONS["corrosion-boues"].y,
-    solutionX: 76,
+    solutionX: 76.5,
     solutionY: 63,
     question: "Que révèle ce dépôt ?",
     prompt: "Le pot à boues est ouvert. Observez la couleur et la texture de la matière retenue sur les barreaux.",
@@ -74,13 +79,15 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     preventiveAction: "Filtration magnétique inox et traitement filmogène à base de tanins",
     correctionSteps: [
       { phase: "curative", title: "Retirer les boues présentes", description: "Le désembouage évacue les dépôts déjà accumulés pour rétablir la circulation et préparer le réseau.", image: "/assets/tradeshow/equipment/magnetic-bars.jpg", actionLabel: "Lancer le désembouage" },
-      { phase: "preventive", title: "Bloquer leur retour", description: "Le filtre magnétique capte les particules ferreuses. Le traitement filmogène protège ensuite durablement les métaux.", image: "/assets/tradeshow/equipment/technical/magnetic-filter.png", actionLabel: "Installer la protection" },
+      { phase: "preventive", title: "Bloquer leur retour", description: "Les barreaux magnétiques captent les particules ferreuses et la poche retient les autres boues. Le traitement filmogène complète la protection des métaux.", image: "/assets/tradeshow/equipment/technical/magnetic-filter.png", actionLabel: "Installer la protection" },
     ],
-    solution: "Après le désembouage, le filtre retient les particules ferreuses. Le traitement filmogène complète la protection pour limiter le retour de la corrosion.",
+    solution: "L’eau ralentit dans le filtre inox : les barreaux aimantés retiennent le fer et la poche capte les autres boues. Après le désembouage, cette double filtration et le traitement d’eau contribuent à protéger le circuit.",
     equipmentImage: "/assets/tradeshow/equipment/technical/magnetic-filter.png",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
-    afterSceneImage: BOILER_ROOM_SCENE.after,
-    motionVideo: "/assets/tradeshow/motion/magnetic-filter.mp4",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/corrosion-boues-after.png",
+    motionVideo: "/assets/tradeshow/motion/explainers/filter.mp4",
+    motionPoster: "/assets/tradeshow/motion/explainers/filter.jpg",
+    productVideo: "/assets/tradeshow/motion/magnetic-filter.mp4",
     detailImage: "/assets/tradeshow/equipment/magnetic-bars.jpg",
     imagePosition: "center",
     proofLabel: "Plage d’utilisation",
@@ -95,8 +102,8 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     signalLabel: "Pression anormale",
     x: BOILER_ROOM_REGIONS["air-degazage"].x,
     y: BOILER_ROOM_REGIONS["air-degazage"].y,
-    solutionX: 77,
-    solutionY: 63,
+    solutionX: 65.8,
+    solutionY: 65,
     question: "À quoi correspondent les taches, gouttelettes et coulures ?",
     prompt: "Observez les traces et les gouttelettes autour du purgeur, en partie haute du ballon de chauffage.",
     answers: ["Présence de tartre", "Température élevée", "Problème de pression"],
@@ -118,8 +125,9 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     solution: "Le groupe de maintien de pression absorbe les variations de volume et maintient automatiquement le réseau dans sa plage de fonctionnement.",
     equipmentImage: "/assets/tradeshow/equipment/technical/pressure-maintenance-group.png",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
-    afterSceneImage: BOILER_ROOM_SCENE.after,
-    motionVideo: "",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/pression-after-v3.png",
+    motionVideo: "/assets/tradeshow/motion/explainers/pressure.mp4",
+    motionPoster: "/assets/tradeshow/motion/explainers/pressure.jpg",
     detailImage: BOILER_ROOM_SCENE.before,
     imagePosition: "92% 20%",
     proofLabel: "Valeur pour l’exploitant",
@@ -154,11 +162,13 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
       { phase: "curative", title: "Enlever le calcaire existant", description: "Le détartrage nettoie d’abord l’échangeur à plaques et les surfaces déjà recouvertes afin de restaurer le transfert de chaleur.", image: "/assets/tradeshow/equipment/client-reference/manchette-test-entartrage.png", actionLabel: "Détartrer l’installation" },
       { phase: "preventive", title: "Traiter l’eau en amont", description: "L’adoucisseur réduit ensuite la dureté de l’eau avant le préparateur ECS pour limiter la formation de nouveaux dépôts.", image: "/assets/tradeshow/equipment/technical/water-softener-hero.png", actionLabel: "Installer l’adoucisseur" },
     ],
-    solution: "Le détartrage restaure l’échange thermique. Installé en amont, l’adoucisseur réduit la dureté de l’eau et limite la formation de nouveaux dépôts dans les canalisations et le préparateur ECS.",
-    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener-hero.png",
+    solution: "Après détartrage, la résine échange les ions calcium et magnésium contre des ions sodium. L’eau adoucie limite les nouveaux dépôts en amont de l’ECS. Le sel régénère la résine lors d’un cycle distinct ; l’adoucisseur ne retire pas le tartre déjà formé.",
+    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener.jpg",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
-    afterSceneImage: BOILER_ROOM_SCENE.after,
-    motionVideo: "/assets/tradeshow/motion/water-softener.mp4",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/entartrage-after.png",
+    motionVideo: "/assets/tradeshow/motion/explainers/softener.mp4",
+    motionPoster: "/assets/tradeshow/motion/explainers/softener.jpg",
+    productVideo: "/assets/tradeshow/motion/water-softener.mp4",
     detailImage: "/assets/tradeshow/equipment/client-reference/manchette-test-entartrage.png",
     imagePosition: "30% center",
     diagnosticMethod: "Une manchette test démontable permet d’observer directement l’entartrage et d’évaluer l’intérêt d’un traitement adapté.",
@@ -168,7 +178,7 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     proofLabel: "Valeur pour le site",
     proofValue: "Moins d’énergie perdue",
     processSteps: ["Détartrer", "Adoucir l’eau", "Préserver l’échange"],
-    technicalFacts: ["Action curative + préventive", "Échange thermique restauré", "Dépôts limités"],
+    technicalFacts: ["Résine échangeuse d’ions", "Régénération au sel", "2–8 bar · 2–40 °C (DN50)"],
   },
   {
     id: "conditionnement",
@@ -180,7 +190,7 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     solutionX: 29,
     solutionY: 62,
     question: "Que révèle la manchette témoin ?",
-    prompt: "Observez la corrosion visible dans la manchette placée sur le départ ECS.",
+    prompt: "Observez la corrosion visible dans la manchette témoin du circuit fermé de chauffage.",
     answers: ["Absence ou insuffisance de traitement d’eau / traitement inadapté", "Un excès de pression", "Un défaut d’isolation"],
     correctAnswer: "Absence ou insuffisance de traitement d’eau / traitement inadapté",
     retryMessage: "Regardez la rouille et les piqûres : c’est la surface métallique de la manchette qui est attaquée.",
@@ -196,11 +206,12 @@ export const boilerRoomScenarios: BoilerRoomScenario[] = [
     correctionSteps: [
       { phase: "preventive", title: "Former un film protecteur", description: "Le traitement filmogène forme une barrière protectrice sur les surfaces internes. Le poste de dosage assure une injection adaptée et suivie.", image: "/assets/tradeshow/equipment/technical/film-dosing-station-v2.png", actionLabel: "Activer le traitement filmogène" },
     ],
-    solution: "Le traitement filmogène protège les parois internes. Le poste de dosage assure une injection adaptée ; le contrôle des manchettes et de l’eau permet de suivre l’efficacité de la protection.",
+    solution: "Dans le circuit fermé de chauffage, le poste de dosage injecte le traitement ECO²Protect L. Ses molécules filmogènes protègent les surfaces métalliques. Le contrôle de l’eau et des manchettes permet d’ajuster le dosage et de suivre cette action progressive.",
     equipmentImage: "/assets/tradeshow/equipment/technical/film-dosing-station-v2.png",
     beforeSceneImage: BOILER_ROOM_SCENE.before,
-    afterSceneImage: BOILER_ROOM_SCENE.after,
-    motionVideo: "",
+    afterSceneImage: "/assets/tradeshow/scenes-v3/conditionnement-after.png",
+    motionVideo: "/assets/tradeshow/motion/explainers/dosing.mp4",
+    motionPoster: "/assets/tradeshow/motion/explainers/dosing.jpg",
     detailImage: "/assets/tradeshow/equipment/technical/corrosion-witness-v2.png",
     imagePosition: "center 35%",
     proofLabel: "Bénéfice réseau",

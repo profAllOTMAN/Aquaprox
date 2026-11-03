@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { boilerRoomScenarios, type BoilerRoomScenario } from "@/data/boilerRoomScenarios";
 import { buildingZoneScenarios, type BuildingZoneId } from "@/data/buildingZoneScenarios";
 import { BoilerRoomGame } from "./BoilerRoomGame";
+import { LOGEMENT_SCENE } from "@/data/otherZoneScenes";
 import { BOILER_ROOM_SCENE } from "@/data/boilerRoomScene";
 import { ROOF_SCENE } from "@/data/roofScene";
 
@@ -22,7 +23,7 @@ type ZoneId = BuildingZoneId | "chaufferie";
 
 const ZONE_META: Record<ZoneId, { label: string; flowLabel: string; video: string }> = {
   chaufferie: { label: "Chaufferie", flowLabel: "Chauffage collectif", video: "/assets/tradeshow/motion/building-to-chaufferie.mp4" },
-  logements: { label: "Logement", flowLabel: "Confort du logement", video: "/assets/tradeshow/motion/building-to-logement.mp4" },
+  logements: { label: "Logement", flowLabel: "Confort du logement", video: LOGEMENT_SCENE.transitionVideo },
   gaines: { label: "Gaines techniques", flowLabel: "Distribution verticale", video: "/assets/tradeshow/motion/building-to-gaines.mp4" },
   toiture: { label: "Toiture", flowLabel: "Production en toiture", video: ROOF_SCENE.transitionVideo },
 };
@@ -91,6 +92,7 @@ function ZoneMarker({ zone, completedCount, focused, onSelect, onHover }: { zone
   return (
     <motion.button className={`trade-zone ${enabled ? "is-active" : ""} ${complete ? "is-complete" : ""} ${focused ? "is-focused" : ""}`} style={{ left: `${zone.x}%`, top: `${zone.y}%` }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .32, ease }} onClick={onSelect} onPointerEnter={() => enabled && onHover(true)} onPointerLeave={() => enabled && onHover(false)} onFocus={() => enabled && onHover(true)} onBlur={() => enabled && onHover(false)} disabled={focused || !enabled} type="button" aria-label={enabled ? (complete ? `${zone.label}, ${completedCount} risques identifiés` : zone.label) : `${zone.label}, bientôt disponible`}>
       <span className="trade-zone-pulse" /><span className="trade-zone-core">{focused || complete ? <Check size={17} strokeWidth={3} /> : "+"}</span>
+      {!focused && <span className="trade-zone-label">{zone.label}</span>}
     </motion.button>
   );
 }
@@ -318,6 +320,7 @@ export function TradeShowExperience() {
   const [selectedZone, setSelectedZone] = useState<ZoneId>("chaufferie");
   const [activeId, setActiveId] = useState(boilerRoomScenarios[1].id);
   const [solved, setSolved] = useState<Set<string>>(new Set());
+  const [prepared, setPrepared] = useState<Set<string>>(new Set());
   const currentScenarios: BoilerRoomScenario[] = selectedZone === "chaufferie" ? boilerRoomScenarios : buildingZoneScenarios.filter((item) => item.zoneId === selectedZone);
   const active = currentScenarios.find((item) => item.id === activeId) ?? currentScenarios[0];
   const zoneSolved = new Set(currentScenarios.filter((item) => solved.has(item.id)).map((item) => item.id));
@@ -356,7 +359,7 @@ export function TradeShowExperience() {
   return <main className="trade-experience"><AnimatePresence mode="sync" initial={false}>
     {(scene === "building" || scene === "buildingFocus" || scene === "buildingZoom") && <BuildingScene key="building" scene={scene} selectedZone={selectedZone} completedByZone={completedByZone} onEnter={enterZone} onVideoComplete={() => setScene("room")} />}
     {scene === "entry" && <EntryScene key="entry" zone={selectedZone} image={currentScenarios[0].beforeSceneImage ?? BOILER_ROOM_BEFORE} />}
-    {scene === "room" && <BoilerRoomGame key={`game-${selectedZone}`} zone={selectedZone} solved={solved} onSolved={(id) => setSolved((current) => new Set(current).add(id))} onBack={() => setScene("building")} />}
+    {scene === "room" && <BoilerRoomGame key={`game-${selectedZone}`} zone={selectedZone} solved={solved} prepared={prepared} onPrepared={(id) => setPrepared((current) => new Set(current).add(id))} onSolved={(id) => setSolved((current) => new Set(current).add(id))} onBack={() => setScene("building")} />}
     {scene === "correction" && <CorrectionScene key={`correction-${active.id}`} scenario={active} onBack={() => setScene("diagnosis")} onComplete={completeCorrection} />}
     {scene === "reveal" && <RevealScene key={`reveal-${active.id}`} scenario={active} />}
     {scene === "complete" && <CompleteScene key={`complete-${active.id}`} scenario={active} count={zoneSolved.size} total={currentScenarios.length} zone={selectedZone} allSolved={zoneSolved.size === currentScenarios.length} onExplore={() => setScene("room")} onBack={() => setScene("building")} />}

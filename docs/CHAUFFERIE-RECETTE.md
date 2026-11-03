@@ -1,12 +1,16 @@
 # Chaufferie — parcours de diagnostic
 
+> Mise à jour active : `CHAUFFERIE-QUESTIONNAIRE-MEDIAS.md`. Le questionnaire à deux questions par anomalie est rétabli. Les notes du parcours simplifié ci-dessous sont conservées comme historique.
+
+> Parcours actif : voir `CHAUFFERIE-PARCOURS-DIRECT.md`. L’équipement est prioritaire ; les films de principe sont accessibles uniquement via « Voir comment ça fonctionne ». La chaufferie conserve une question par anomalie, validée directement au toucher, sans clic de confirmation. Les vérifications de l’ancien parcours ci-dessous sont historiques.
+
 ## Parcours livré
 
-Le clic sur Chaufferie conserve le zoom vidéo existant, arrêté à 3,2 secondes avant son fondu vers un autre décor. La scène fixe reprend la disposition de la capture de référence fournie par le client. Aucun écran d’arrivée supplémentaire. Quatre points « + » sans légende et leurs courts traits de liaison ciblent les anomalies sans les masquer. Le clic rapproche la caméra de la zone pendant 720 ms, puis ouvre l’enquête. Le retour restitue doucement la vue d’ensemble.
+Le clic sur Chaufferie conserve le zoom vidéo existant, arrêté à 3,2 secondes avant son fondu vers un autre décor. La scène fixe reprend le décor à deux grands caissons gris demandé le 3 novembre 2026. Les masques et points d’observation sont adaptés à ce décor ; les enquêtes et améliorations restent conservées. Aucun écran d’arrivée supplémentaire. Quatre points « + » sans légende et leurs courts traits de liaison ciblent les anomalies sans les masquer. Le clic rapproche la caméra de la zone pendant 720 ms, puis ouvre l’enquête. Le retour restitue doucement la vue d’ensemble.
 
 Chaque enquête comprend deux questions : reconnaître le problème, puis choisir l’intervention. Une mauvaise réponse est écartée et accompagnée d’un indice. Chaque bonne réponse explique le constat ou l’action. Les interventions curatives précèdent la prévention lorsqu’elles sont pertinentes. Le traitement filmogène comporte une seule étape de protection.
 
-La scène garde son cadrage. Les installations apparaissent par fondu local et restent visibles après les autres corrections, y compris après un retour au bâtiment. Les boutons Avant et Après comparent le constat et la solution. Le filtre et l’adoucisseur utilisent les vidéos existantes, muettes, en boucle, dès la présentation de la protection. Le maintien de pression et le dosage utilisent leurs visuels fixes ; aucune vidéo non correspondante ne leur est attribuée.
+La scène garde son cadrage. Les installations apparaissent par fondu local et restent visibles après les autres corrections, y compris après un retour au bâtiment. Les boutons Avant et Après comparent le constat et la solution. Les quatre solutions utilisent désormais des boucles pédagogiques locales, muettes, avec pause/lecture et accès au visuel de l’équipement. Voir `CHAUFFERIE-ANIMATIONS.md` pour les principes, les sources et la reproduction des films. Les étapes curatives et les corrections locales restent conservées.
 
 ## Correspondance des visuels
 

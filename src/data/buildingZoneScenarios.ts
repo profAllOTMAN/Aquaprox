@@ -1,6 +1,6 @@
 import type { BoilerRoomScenario } from "./boilerRoomScenarios";
 import { ROOF_REGIONS, ROOF_SCENE } from "./roofScene";
-import { LOGEMENT_SCENE } from "./otherZoneScenes";
+import { LOGEMENT_REGIONS, LOGEMENT_SCENE } from "./otherZoneScenes";
 
 export type BuildingZoneId = "logements" | "gaines" | "toiture";
 
@@ -18,24 +18,24 @@ const LOGEMENT_AFTER = LOGEMENT_SCENE.after;
 export const buildingZoneScenarios: BuildingZoneScenario[] = [
   {
     zoneId: "logements", zoneLabel: "Logement", roomTitle: "Confort et eau chaude sanitaire", instruction: "Inspectez le radiateur, la douche et le lavabo.",
-    id: "radiateur-emboue", index: "01", shortLabel: "Radiateur emboué", signalLabel: "Bas du radiateur froid", x: 34, y: 56, solutionX: 34, solutionY: 58,
+    id: "radiateur-emboue", index: "01", shortLabel: "Radiateur emboué", signalLabel: "Bas du radiateur froid", x: LOGEMENT_REGIONS["radiateur-emboue"].x, y: LOGEMENT_REGIONS["radiateur-emboue"].y, solutionX: 30.5, solutionY: 56.5,
     question: "Que révèle cette zone froide ?", prompt: "L’émetteur est blanc dans la scène. Après sélection, la vue thermique montre que sa partie basse reste froide.",
     answers: ["Embouage du radiateur", "Fenêtre ouverte", "Excès de pression", "Eau trop dure"], correctAnswer: "Embouage du radiateur",
     retryMessage: "Bien essayé. Une zone froide persistante en partie basse indique que l’eau circule mal dans le radiateur.", assistedHint: "Les dépôts lourds s’accumulent en bas : cherchez la réponse liée aux boues du réseau.",
     diagnosis: "Circulation dégradée par les boues", description: "Les boues s’accumulent dans la partie basse du radiateur. La surface d’émission diminue et le logement chauffe moins bien.",
-    consequences: ["Confort réduit", "Consommation accrue", "Réseau déséquilibré"], equipment: "Désembouage du réseau de chauffage", mechanism: "Restauration de la circulation", benefit: "Une chaleur homogène et un meilleur confort",
+    consequences: ["Confort réduit", "Consommation accrue", "Réseau déséquilibré"], equipment: "Désembouage puis filtration en chaufferie", mechanism: "Restauration de la circulation", benefit: "Une chaleur homogène et un meilleur confort",
     curativeAction: "Désembouer le réseau et le radiateur", preventiveAction: "Filtrer les particules ferreuses et suivre la qualité d’eau",
     solution: "Le désembouage retire les dépôts existants. La filtration magnétique en chaufferie limite ensuite leur retour dans les radiateurs.",
-    equipmentImage: "/assets/tradeshow/equipment/technical/magnetic-filter.png", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "", detailImage: "/assets/tradeshow/zones/logement-before.png", imagePosition: "center",
+    equipmentImage: "/assets/tradeshow/equipment/technical/magnetic-filter.png", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "/assets/tradeshow/motion/explainers/radiator.mp4", motionPoster: "/assets/tradeshow/motion/explainers/radiator.jpg", productVideo: "/assets/tradeshow/motion/magnetic-filter.mp4", equipmentLocation: "Filtration préventive · chaufferie", equipmentMediaLabel: "Filtre magnétique de protection", detailImage: "/assets/tradeshow/zones/radiator-thermal-before-v3.png", resultImage: "/assets/tradeshow/zones/radiator-thermal-after-v3.png", imagePosition: "center",
     proofLabel: "Signe visible", proofValue: "Bas froid en thermographie", processSteps: ["Observer", "Désembouer", "Protéger"], technicalFacts: ["Confort restauré", "Débit amélioré", "Filtration en chaufferie"],
     correctionSteps: [
-      { phase: "curative", title: "Évacuer les boues accumulées", description: "Le désembouage décroche et évacue les dépôts qui bloquent la partie basse du radiateur.", image: "/assets/tradeshow/zones/logement-before.png", actionLabel: "Lancer le désembouage" },
-      { phase: "preventive", title: "Protéger durablement le réseau", description: "La filtration magnétique installée en chaufferie capte ensuite les particules ferreuses avant leur retour dans le logement.", image: "/assets/tradeshow/equipment/technical/magnetic-filter.png", actionLabel: "Vérifier la chaleur homogène" },
+      { phase: "curative", title: "Évacuer les boues accumulées", description: "Le désembouage décroche et évacue les dépôts qui bloquent la partie basse du radiateur.", image: LOGEMENT_BEFORE, actionLabel: "Lancer le désembouage" },
+      { phase: "preventive", title: "Protéger durablement le réseau", description: "La filtration magnétique installée en chaufferie capte ensuite les particules ferreuses avant leur retour dans le logement.", image: "/assets/tradeshow/equipment/technical/magnetic-filter.png", actionLabel: "Protéger le réseau et vérifier le radiateur" },
     ],
   },
   {
     zoneId: "logements", zoneLabel: "Logement", roomTitle: "Confort et eau chaude sanitaire", instruction: "Inspectez le radiateur, la douche et le lavabo.",
-    id: "douche-entartrage", index: "02", shortLabel: "Douche entartrée", signalLabel: "Dépôts sur la paroi", x: 64, y: 46, solutionX: 64, solutionY: 49,
+    id: "douche-entartrage", index: "02", shortLabel: "Douche entartrée", signalLabel: "Dépôts sur la paroi", x: LOGEMENT_REGIONS["douche-entartrage"].x, y: LOGEMENT_REGIONS["douche-entartrage"].y, solutionX: 66, solutionY: 57,
     question: "Que révèle la paroi de douche ?", prompt: "Observez les traces blanches et le dépôt minéral fortement visible sur le verre.",
     answers: ["Dépôt calcaire", "Corrosion", "Présence d’air", "Pression insuffisante"], correctAnswer: "Dépôt calcaire",
     retryMessage: "Regardez la matière blanche et dure déposée par l’eau sur la paroi.", assistedHint: "Une eau dure laisse du calcaire sur les surfaces chaudes et les équipements sanitaires.",
@@ -43,7 +43,7 @@ export const buildingZoneScenarios: BuildingZoneScenario[] = [
     consequences: ["Surfaces entartrées", "Entretien plus fréquent", "Équipements ECS exposés"], equipment: "Détartrage puis adoucissement", mechanism: "Retrait du dépôt et réduction de la dureté", benefit: "Des surfaces propres et des équipements protégés",
     curativeAction: "Éliminer les dépôts déjà présents", preventiveAction: "Installer ou régler l’adoucisseur en amont",
     solution: "Le détartrage traite le dépôt existant. L’adoucisseur réduit ensuite la dureté pour limiter sa réapparition dans le logement et le réseau ECS.",
-    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener-hero.png", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "/assets/tradeshow/motion/water-softener.mp4", detailImage: LOGEMENT_BEFORE, imagePosition: "64% 48%",
+    equipmentImage: "/assets/tradeshow/equipment/technical/water-softener.jpg", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "/assets/tradeshow/motion/explainers/softener.mp4", motionPoster: "/assets/tradeshow/motion/explainers/softener.jpg", productVideo: "/assets/tradeshow/motion/water-softener.mp4", equipmentLocation: "Adoucissement en amont · local technique", equipmentMediaLabel: "Adoucisseur d’eau", detailImage: LOGEMENT_BEFORE, imagePosition: "64% 48%",
     proofLabel: "Constat visuel", proofValue: "Dépôt blanc sur le verre", processSteps: ["Constater", "Détartrer", "Adoucir"], technicalFacts: ["Action curative", "Prévention durable", "Protection ECS"],
     correctionSteps: [
       { phase: "curative", title: "Retirer le tartre existant", description: "Le détartrage élimine les dépôts déjà formés sur les surfaces et dans les équipements touchés.", image: "/assets/tradeshow/equipment/scale-deposit.jpg", actionLabel: "Détartrer" },
@@ -52,18 +52,19 @@ export const buildingZoneScenarios: BuildingZoneScenario[] = [
   },
   {
     zoneId: "logements", zoneLabel: "Logement", roomTitle: "Confort et eau chaude sanitaire", instruction: "Inspectez le radiateur, la douche et le lavabo.",
-    id: "lavabo-legionelle", index: "03", shortLabel: "ECS trop froide", signalLabel: "Eau froide malgré le réglage chaud", x: 87, y: 45, solutionX: 86, solutionY: 54,
+    id: "lavabo-legionelle", index: "03", shortLabel: "ECS trop froide", signalLabel: "Eau froide malgré le réglage chaud", x: LOGEMENT_REGIONS["lavabo-legionelle"].x, y: LOGEMENT_REGIONS["lavabo-legionelle"].y, solutionX: 91.8, solutionY: 45.5,
     question: "Que signifie cette eau froide au réglage maximal ?", prompt: "Le mitigeur est positionné sur le chaud, mais l’eau distribuée reste froide.",
     answers: ["Risque sanitaire lié à une ECS insuffisamment chaude", "Fonctionnement normal", "Excès de pression", "Entartrage du radiateur"], correctAnswer: "Risque sanitaire lié à une ECS insuffisamment chaude",
     retryMessage: "Le réglage est déjà au maximum : le problème vient de la production ou de la distribution ECS.", assistedHint: "Une eau insuffisamment chaude peut favoriser le développement bactérien dans le réseau.",
-    diagnosis: "Risque de prolifération de légionelles", description: "Une température ECS insuffisante peut favoriser le développement bactérien et représente un risque sanitaire.",
-    consequences: ["Risque sanitaire", "Production ECS défaillante", "Réseau à sécuriser"], equipment: "Kit de chloration PROBIO", mechanism: "Désinfection curative pilotée par sonde REDOX", benefit: "Éliminer la contamination et sécuriser le réseau ECS",
+    diagnosis: "Défaut de production ou de distribution ECS", description: "Une eau qui reste froide malgré la commande chaude révèle un défaut ECS à contrôler. Une température insuffisante peut favoriser un risque bactérien ; elle ne démontre pas une contamination.",
+    consequences: ["Risque sanitaire", "Production ECS défaillante", "Réseau à sécuriser"], equipment: "Kit de chloration PROBIO", mechanism: "Désinfection curative pilotée par sonde REDOX", benefit: "Un réseau traité, une production ECS rétablie et un suivi adapté",
     curativeAction: "Mettre en œuvre une désinfection par chloration", preventiveAction: "Rétablir puis suivre une température ECS suffisante",
-    solution: "Le kit PROBIO pilote l’injection de chlore à partir d’une mesure REDOX afin de désinfecter le réseau. La cause de la température insuffisante doit ensuite être corrigée et suivie.",
-    equipmentImage: "/assets/tradeshow/equipment/client-reference/kit-probio.png", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "", detailImage: LOGEMENT_BEFORE, diagnosticImage: "/assets/tradeshow/equipment/technical/legionella-cutaway.png", imagePosition: "88% 48%",
+    solution: "Après confirmation de la contamination dans cette enquête, le kit PROBIO permet une désinfection pilotée par mesure REDOX. La production ou la distribution ECS est ensuite remise en état et contrôlée. La chloration seule ne réchauffe pas l’eau et ne remplace pas le suivi sanitaire.",
+    equipmentImage: "/assets/tradeshow/equipment/client-reference/kit-probio.png", beforeSceneImage: LOGEMENT_BEFORE, afterSceneImage: LOGEMENT_AFTER, motionVideo: "/assets/tradeshow/motion/explainers/probio.mp4", motionPoster: "/assets/tradeshow/motion/explainers/probio.jpg", equipmentLocation: "Kit de chloration · local technique ECS", equipmentMediaLabel: "Kit PROBIO · schéma client", detailImage: "/assets/tradeshow/zones/sink-observation-before-v3.png", resultImage: "/assets/tradeshow/zones/sink-observation-after-v3.png", diagnosticImage: "/assets/tradeshow/equipment/technical/legionella-cutaway.png", imagePosition: "88% 48%",
     proofLabel: "Constat", proofValue: "Mitigeur chaud · eau froide", processSteps: ["Constater", "Désinfecter", "Sécuriser"], technicalFacts: ["Sonde REDOX", "Pompes d’injection", "Boucle ECS"],
     correctionSteps: [
-      { phase: "curative", title: "Désinfecter le réseau ECS", description: "Le kit de chloration PROBIO dose la désinfection sous contrôle REDOX pour éliminer la contamination et sécuriser le réseau.", image: "/assets/tradeshow/equipment/client-reference/kit-probio.png", actionLabel: "Lancer la désinfection curative" },
+      { phase: "curative", title: "Désinfecter après contrôle", description: "Le contrôle de cette enquête confirme une contamination. Une intervention de désinfection est réalisée avec le kit PROBIO sous contrôle REDOX, selon le protocole adapté au site.", image: "/assets/tradeshow/equipment/client-reference/kit-probio.png", actionLabel: "Lancer la désinfection curative" },
+      { phase: "preventive", title: "Rétablir et suivre la production ECS", description: "La cause du défaut de production ou de distribution est corrigée. La température et les contrôles de l’eau sont vérifiés et suivis avant de considérer l’intervention terminée.", image: LOGEMENT_AFTER, actionLabel: "Rétablir l’ECS et vérifier les contrôles" },
     ],
   },
   {

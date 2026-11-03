@@ -53,3 +53,51 @@
 @media(max-width:900px){.boiler-header{inset:18px 18px auto;gap:12px}.boiler-score span{display:none}.boiler-investigation{inset:90px 18px 18px;grid-template-columns:43% 57%}.boiler-panel{padding:22px}.boiler-progress-rail{font-size:8px;margin-bottom:20px;gap:5px}.boiler-panel h2{font-size:25px}.boiler-panel-body>p,.boiler-explanation p{font-size:14px}.boiler-answers{margin-top:15px}.boiler-answers button{padding:9px;min-height:48px}.boiler-answers button>strong{font-size:13px}.boiler-primary{font-size:13px}.boiler-outcome strong{font-size:15px}.boiler-plus{width:48px;height:48px}.boiler-mission{left:24px;bottom:25px}.boiler-mission p{font-size:14px}}
 @media(max-width:600px){.boiler-room-title strong{font-size:17px}.boiler-back,.boiler-score{padding:0 12px;font-size:12px}.boiler-score{gap:6px}.boiler-investigation{grid-template-columns:1fr;grid-template-rows:minmax(120px,28%) minmax(0,1fr);inset:85px 10px 10px}.boiler-visual{border-right:0;border-bottom:1px solid #36596f}.boiler-visual-caption{left:12px;right:60px;bottom:10px;padding:7px 10px}.boiler-visual-caption strong{font-size:14px;margin-top:3px}.boiler-visual-caption small{font-size:8px}.boiler-close{top:10px;right:10px}.boiler-panel{padding:15px;overflow:auto}.boiler-panel-body{min-height:min-content}.boiler-progress-rail{margin-bottom:8px}.boiler-panel h2{font-size:23px}.boiler-panel-body>p{font-size:14px}.boiler-answers{gap:6px;margin:12px 0}.boiler-answers button>span{flex-basis:15px}.boiler-hint{margin-bottom:12px}.boiler-primary{margin-top:12px;min-height:47px}.boiler-evidence-media.is-purgeur img{width:180%;left:-80%;top:-45%}.boiler-mission h1{font-size:24px}.boiler-mission p{max-width:280px;font-size:13px}.boiler-plus{width:42px;height:42px}}
 @media(prefers-reduced-motion:reduce){.boiler-plus>span{animation:none}.boiler-shade{transition:none}}
+
+/* Local explanatory films keep the existing room and leave the caption unobstructed. */
+.boiler-solution-media{position:absolute;inset:0;background:#071526}
+.boiler-solution-media>img,.boiler-solution-media>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.boiler-solution-media.has-explainer{bottom:112px}
+.boiler-solution-media.has-explainer>img,.boiler-solution-media.has-explainer>video{top:48px;height:calc(100% - 48px)}
+.boiler-solution-media>video{transition:opacity .5s ease}
+.boiler-animation-control{position:absolute;z-index:2;top:12px;left:12px;display:flex;align-items:center;gap:7px;min-height:38px;padding:7px 12px;border:1px solid #609db7;border-radius:2px 6px 2px 6px;background:#06192bf0;color:#eafaff;font:700 12px var(--font-lato),Arial,sans-serif;cursor:pointer}
+.boiler-animation-control:focus-visible{outline:2px solid #9bdff5;outline-offset:3px}
+.boiler-animation-control:hover{background:#153f5a}
+@media(max-width:600px){.boiler-solution-media.has-explainer{bottom:55px}.boiler-animation-control{top:6px;left:6px;min-height:32px;padding:5px 8px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.boiler-solution-media>video{transition:none}}
+
+/* Equipment first; mechanism films are available only on request. */
+.boiler-how{display:inline-flex;align-items:center;justify-content:center;gap:8px;align-self:flex-start;min-height:42px;padding:9px 13px;margin:16px 0 0;border:1px solid #679db9;border-radius:2px 6px 2px 6px;color:#c6f0ff;background:#0a263e;font:700 13px var(--font-lato),Arial,sans-serif;cursor:pointer}
+.boiler-how:hover{background:#18445e;border-color:#a5e4fb}.boiler-how:focus-visible{outline:2px solid #a5e4fb;outline-offset:3px}
+.boiler-direct-diagnosis{padding:10px 14px;margin:0 0 16px;border-left:2px solid #66c6e8;background:#66c6e80b}.boiler-direct-diagnosis small{display:block;margin-bottom:4px;color:#92c3da;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.boiler-direct-diagnosis strong{font-size:16px;color:#eaf8ff}
+.boiler-result-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.boiler-result-actions .boiler-how{margin:0}
+.boiler-result-glow{position:absolute;width:16%;height:29%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,#8ae4fc45,transparent 70%);border:1px solid #9be8ff77;border-radius:50%;pointer-events:none}
+.boiler-reveal-status{position:absolute;z-index:5;left:50%;bottom:30px;transform:translateX(-50%);width:min(600px,calc(100% - 36px));padding:18px 24px;border:1px solid #83d7ed;border-left:3px solid #8de6f8;background:#061a2de8;backdrop-filter:blur(16px);box-shadow:0 18px 50px #0005}.boiler-reveal-status>span{display:block;margin-bottom:6px;color:#8ad9f1;font-size:11px;text-transform:uppercase;letter-spacing:.12em}.boiler-reveal-status strong{display:block;color:#f1fcff;font-size:23px}.boiler-reveal-status p{margin:8px 0 0;color:#c6dfec;font-size:15px}.boiler-reveal-status button{display:flex;gap:10px;align-items:center;margin-top:12px;padding:8px 0;border:0;background:none;color:#a9e9ff;font:700 13px var(--font-lato),Arial,sans-serif;cursor:pointer}.boiler-reveal-status button:focus-visible{outline:2px solid #a9e9ff;outline-offset:3px}
+@media(max-height:780px){.boiler-how{margin-top:10px;min-height:36px;padding:7px 11px;font-size:12px}.boiler-direct-diagnosis{margin-bottom:12px;padding:8px 12px}}
+@media(max-width:600px){.boiler-reveal-status{bottom:14px;padding:14px}.boiler-reveal-status strong{font-size:19px}.boiler-reveal-status p{font-size:13px}}
+
+.boiler-solution-media>video{background:#071526}
+.boiler-direct-diagnosis small{display:flex;align-items:center;gap:6px;color:#a5e5d1}.boiler-direct-diagnosis p{margin:6px 0 0;color:#bbd4e2;font-size:13px;line-height:1.4}
+
+.boiler-game[data-zone="chaufferie"] .boiler-plus{width:48px;height:48px}
+.boiler-treatment-sequence{display:grid;grid-template-columns:1fr 1fr;gap:8px;list-style:none;padding:0;margin:0 0 14px}
+.boiler-treatment-sequence li{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #36556c;background:#071c3044;color:#a4bece}
+.boiler-treatment-sequence li>span{display:grid;place-items:center;flex:0 0 23px;width:23px;height:23px;border:1px solid #638ca3;border-radius:50%;font-size:11px}
+.boiler-treatment-sequence strong{display:block;font-size:12px;line-height:1.25;font-weight:600}.boiler-treatment-sequence small{display:block;margin-top:4px;font-size:10px;color:#91adc0}
+.boiler-treatment-sequence li.is-current{border-color:#8bdcf3;background:#66c6e810;color:#eafaff}.boiler-treatment-sequence li.is-current small{color:#b6eafd}
+.boiler-treatment-sequence li.is-done{color:#a5e5d1}.boiler-treatment-sequence li.is-done>span{background:#1d4a49;border-color:#99d9c7}
+@media(max-width:600px){.boiler-game[data-zone="chaufferie"] .boiler-plus{width:42px;height:42px}.boiler-treatment-sequence{gap:5px;margin-bottom:10px}.boiler-treatment-sequence li{padding:6px}.boiler-treatment-sequence strong{font-size:11px}}
+.boiler-feedback-how{margin:0 0 14px}
+
+.boiler-game[data-zone="logements"] .boiler-plus{width:48px;height:48px}
+.boiler-stage-observation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.boiler-water-stream{stroke-dasharray:5 4;animation:boiler-water-flow .8s linear infinite}
+@keyframes boiler-water-flow{to{stroke-dashoffset:-18}}
+.boiler-probio-media{position:absolute;inset:0;background:radial-gradient(ellipse at center,#153c59,#071526)}
+.boiler-probio-sheet{position:absolute;top:54px;left:16px;width:calc(100% - 32px);height:calc(100% - 178px)}
+.boiler-probio-view{position:absolute;top:12px;left:12px;min-height:38px;padding:8px 12px;border:1px solid #78bbd6;border-radius:2px 6px 2px 6px;color:#e7faff;background:#0c2940;font:700 12px var(--font-lato),Arial,sans-serif;cursor:pointer}
+.boiler-probio-view:focus-visible{outline:2px solid #a5e4fb;outline-offset:3px}
+.boiler-diagnostic-note{position:absolute;top:14px;left:14px;right:14px;width:fit-content;padding:9px 13px;border:1px solid #72bdd6;background:#071a30ee;color:#bfeafa;font-size:12px}
+.boiler-control-result{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;margin:12px 0 0;border:1px solid #4e927f;background:#2e675322;color:#bde9da;font-size:12px;line-height:1.4}.boiler-control-result svg{flex:0 0 auto}
+@media(prefers-reduced-motion:reduce){.boiler-water-stream{animation:none}}
+@media(max-width:600px){.boiler-game[data-zone="logements"] .boiler-plus{width:42px;height:42px}.boiler-probio-sheet{top:38px;height:calc(100% - 95px)}.boiler-probio-view{top:5px;left:6px;min-height:28px;padding:5px 8px;font-size:10px}.boiler-diagnostic-note{top:6px;left:6px;font-size:10px;padding:5px 8px}}

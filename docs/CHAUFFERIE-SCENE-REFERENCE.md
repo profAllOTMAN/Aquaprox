@@ -1,4 +1,21 @@
-# Chaufferie — scène fixe issue du cadrage vidéo
+# Chaufferie — retour au décor avec deux chaudières
+
+## Scène active (3 novembre 2026)
+
+À la demande du client, la scène après le zoom reprend le décor avec les deux grands caissons gris, le ballon bleu à gauche et le ballon inox à droite. Le zoom existant reste arrêté à 3,2 s avant son fondu vers un autre local. Aucun écran intermédiaire n’est ajouté.
+
+- Avant : `public/assets/tradeshow/scenes-v3/pression-anormale-before.png`
+- Filtration : `public/assets/tradeshow/scenes-v3/corrosion-boues-after.png`
+- Maintien de pression : `public/assets/tradeshow/scenes-v3/pression-after-v3.png`
+- Adoucissement : `public/assets/tradeshow/scenes-v3/entartrage-after.png`
+- Dosage : `public/assets/tradeshow/scenes-v3/conditionnement-after.png`
+
+Les masques de correction utilisent désormais le visuel propre à chaque intervention. Le groupe de maintien de pression apparaît entre le caisson droit et le vase rouge ; le filtre est à droite du vase. Leurs masques sont séparés pour conserver les deux installations quel que soit l’ordre des enquêtes. Les points visent le pot du retour chauffage (78,2 %, 63,5 %), le purgeur du ballon droit (90,5 %, 35,2 %), l’échangeur ECS (20 %, 61,5 %) et la tuyauterie à proximité du futur poste de dosage (31,8 %, 53 %). Le gros plan de pression provient du décor actif.
+
+Les huit questions, indices, explications, étapes curatives puis préventives, vidéos des produits en boucle et corrections persistantes sont conservés. Les autres zones ne changent pas. Réutilisation des médias existants : aucune génération et aucun crédit Higgsfield.
+
+## Historique — cadrage remplacé
+
 
 La vidéo existante s’arrête à 3,2 s, avant le fondu vers l’ancien local technique. La capture client et une image extraite du même film servent de références à une reconstitution fixe de la même disposition. La reconstitution conserve l’ordre des équipements mais ajoute les indices pédagogiques ; elle n’est pas une copie pixel à pixel de la capture.
 

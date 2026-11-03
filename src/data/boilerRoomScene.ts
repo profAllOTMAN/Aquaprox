@@ -1,7 +1,7 @@
-// Shared scene coordinates keep the video stop, camera and touchpoints aligned.
+// Two-boiler room requested by the client; retain the current diagnostic journey.
 export const BOILER_ROOM_SCENE = {
-  before: "/assets/tradeshow/scenes-v3/chaufferie-reference-before-v4.png",
-  after: "/assets/tradeshow/scenes-v3/chaufferie-reference-after-v4.png",
+  before: "/assets/tradeshow/scenes-v3/pression-anormale-before.png",
+  after: "/assets/tradeshow/scenes-v3/chaufferie-organized-before.png",
   // Stop before the source video's dissolve into a different boiler room.
   videoStopTime: 3.2,
   width: 1672,
@@ -11,8 +11,8 @@ export const BOILER_ROOM_SCENE = {
 export const BOILER_ROOM_REGIONS: Record<string, {
   x: number; y: number; zoom: number; patches: string[];
 }> = {
-  "corrosion-boues": { x: 72.7, y: 56.5, zoom: 2.3, patches: ["inset(49% 21% 30% 69%)"] },
-  "air-degazage": { x: 88.9, y: 28.5, zoom: 2.3, patches: ["inset(43% 29% 32% 61.5%)", "inset(21% 5% 59% 83%)"] },
-  entartrage: { x: 47.7, y: 44.3, zoom: 2.5, patches: ["inset(42% 84% 32% 2%)", "inset(41% 49% 52% 46%)"] },
-  conditionnement: { x: 37.9, y: 44.3, zoom: 2.5, patches: ["inset(46% 63% 32% 28%)", "inset(41% 60% 52% 36%)"] },
+  "corrosion-boues": { x: 78.2, y: 63.5, zoom: 2.3, patches: ["inset(54% 12.5% 24% 71.5%)"] },
+  "air-degazage": { x: 90.5, y: 35.2, zoom: 2.3, patches: ["polygon(61.8% 57.2%, 64.9% 57.2%, 64.9% 55%, 67% 55%, 67% 60.8%, 68.6% 61%, 69.3% 63%, 69.3% 76%, 61.8% 76%)", "inset(21% 6% 51% 86%)"] },
+  entartrage: { x: 20, y: 65, zoom: 2.5, patches: ["inset(43% 87.5% 21% 1%)"] },
+  conditionnement: { x: 33.1, y: 55.2, zoom: 2.5, patches: ["inset(38% 64.5% 24% 25.5%)"] },
 };
