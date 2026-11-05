@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-03",
+  "purpose": "Corrections client chaufferie — raccord d’injection et film protecteur",
+  "image": {
+    "id": "76d4aa7a-fcc8-47e9-8536-c1828c93acad",
+    "credits": 2,
+    "params": {
+      "model": "nano_banana_2_1",
+      "resolution": "2k",
+      "count": 1,
+      "aspect_ratio": "16:9",
+      "medias": [
+        {
+          "role": "image",
+          "value": "https://raw.githubusercontent.com/profAllOTMAN/Aquaprox/main/public/assets/tradeshow/equipment/technical/film-dosing-station-v2.png"
+        }
+      ],
+      "prompt": "Create a technically clear premium 3D educational rendering of the same blue metering pump and white chemical tank as reference, navy blue studio background with subtle cyan lighting. Wide 16:9. Pump and tank on LEFT third, entire equipment visible. On RIGHT two thirds show one horizontal metallic water pipe with a longitudinal cutaway window exposing clean silver interior and transparent clear water. The pump discharge transparent small tube arcs up to a BLACK compact injection fitting mounted ON THE OUTSIDE TOP WALL of the pipe. The tube ENDS at that flush wall fitting. Absolutely NO tube, cable, or long lance inside the pipe lumen. Pump suction tube goes down into white tank. OMIT all electrical cables entirely. Pipe water and inner metal surfaces perfectly CLEAN: no black dirt, sludge, corrosion, brown deposits or particles. No protective coating yet, this is starting frame before film formation. Precise realistic engineering connections, stationary equipment, no people, no text, no logos, no arrows. Balanced readable composition, no objects cut off, brushed metal and realistic plastic. Preserve pump identity and colors, uncluttered."
+    }
+  },
+  "video": {
+    "id": "3283190d-fc62-4704-8d53-213be367807d",
+    "credits": 8.75,
+    "params": {
+      "model": "kling3_0",
+      "mode": "pro",
+      "duration": 5,
+      "sound": "off",
+      "count": 1,
+      "aspect_ratio": "16:9",
+      "medias": [
+        {
+          "role": "start_image",
+          "value": "76d4aa7a-fcc8-47e9-8536-c1828c93acad"
+        }
+      ],
+      "prompt": "Locked camera 5-second technical educational animation of EXACT supplied dosing pump, white tank, external clear tube and horizontal clean metal pipe cutaway. Preserve all geometry and connections perfectly. External clear discharge tube ENDS at the black fitting on TOP EXTERIOR WALL, never enters the pipe. Black fitting remains fixed at wall; no long injection lance or cable inside. No electrical wires anywhere. Clear water flows gently left to right. At 0.5 sec dosing starts: a very small transparent pulse enters through the wall fitting. From 1 to 4 seconds a THIN WHITE PEARLESCENT PROTECTIVE FILM progressively coats the INTERNAL METAL WALL SURFACE visible through the cutaway, spreading from injection point along upper and lower inner walls. White coating hugs metal like an ultra-thin surface lining, smooth and continuous, NOT white clouds or foam in water. Center of pipe remains transparent clear water, open and unobstructed throughout. At 4-5 sec hold the thin white coated wall with clear flowing water to show protected condition. No dirt, no dark deposits, no rust, no black liquid, no debris removal, no cleaning effect. No person, no text, no camera movement, no morphing or extra equipment. Premium navy/cyan realistic 3D consistent with reference. Demonstrate protective film formation only, with visual time compression."
+    }
+  },
+  "totalCredits": 10.75,
+  "previousLogementCredits": 39,
+  "trackedTotalCredits": 49.75,
+  "cap": 300
+}
